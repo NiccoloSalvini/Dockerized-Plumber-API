@@ -1086,12 +1086,28 @@ scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano
 
 
 #* Get complete raw data  
+#* @param url you you want to extract information by
 #* @param npages the number of pages you want to scrape
 #* @get /scrape
-function(npages = 10){
+function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
+         npages = 10){
             list(
-                        data = scrape.all(npages)
+                        data = scrape.all(url,npages)
             )
            
+}
+
+
+
+#* Get all the links  
+#* @param url you you want to extract info
+#* @param npages num of pages you are interested in
+#* @get /links
+function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
+         npages = 10){
+            list(
+                        links = all.links(url,npages)
+            )
+            
 }
 
