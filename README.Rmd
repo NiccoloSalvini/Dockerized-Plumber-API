@@ -51,13 +51,13 @@ These **REST APIs** provide a way for platform/language independent access to th
 
 
 ```{r FIRENZE, echo=FALSE, imgcenter = TRUE, fig.retina=1}
-knitr::include_graphics("img/apiinfr.png") 
+knitr::include_graphics("img/apiinfr.PNG") 
 ```
 
 
 ## API Documentation:  
 
-- Get complete data 
+- Get fast raw data, 5 covariates: title, price, num of rooms, sqmeter, primarykey
 
       GET */scrape
 

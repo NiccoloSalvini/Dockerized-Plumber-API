@@ -36,13 +36,14 @@ to scrap .<br><br>
 
 <p align="center">
 
-<img src="img/apiinfr.png" width="1200" />
+<img src="img/apiinfr.PNG" width="1200" />
 
 </p>
 
 ## API Documentation:
 
-  - Get complete data
+  - Get fast raw data, 5 covariates: title, price, num of rooms,
+    sqmeter, primarykey
     
         GET */scrape
         

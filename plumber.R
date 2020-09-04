@@ -337,20 +337,19 @@ all.links= function(url  = "https://www.immobiliare.it/affitto-case/milano/?crit
 ## it scrapes all the information inside a single link
 ## 
 
-scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
+scrape.all.info = function(links,
                            npages = 10){
             
             cl = makeCluster(detectCores()-1)
             registerDoParallel(cl)
             
-            links = all.links(url = url, npages = 10)
-            
             ALL = foreach(i = seq_along(links),
                           .packages = lista.pacchetti,
                           .combine = "bind_rows",
                           .multicombine = FALSE,
+                          .export = "links",
                           .verbose = TRUE,
-                          .errorhandling='pass') %dopar% {
+                          .errorhandling="pass") %dopar% {
                                       
                                       ## Utils start----
                                       
@@ -435,7 +434,7 @@ scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano
                                                                           return()
                                                               
                                                   } else {
-                                                              return(NA)
+                                                              return(NA_character_)
                                                   }
                                                   
                                       }
@@ -480,11 +479,10 @@ scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano
                                                   
                                                   if ("anno di costruzione" %in% web) {
                                                               pos = match("anno di costruzione",web)
-                                                              web[pos+1] %>% 
-                                                                          as.numeric() %>%
+                                                              web[pos+1] %>%
                                                                           return()
                                                   } else {
-                                                              return(NA)
+                                                              return(NA_character_)
                                                               
                                                   }
                                       }
@@ -502,7 +500,7 @@ scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano
                                                               pos = match("Climatizzazione",web)
                                                               return(web[pos+1])
                                                   } else {
-                                                              return(NA)
+                                                              return(NA_character_)
                                                   }
                                                   
                                       }
@@ -524,7 +522,7 @@ scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano
                                                               pos = match("altre caratteristiche",web)
                                                               return(web[pos+1])
                                                   } else {
-                                                              return(NA)
+                                                              return(NA_character_)
                                                   }
                                                   
                                       }
@@ -543,7 +541,7 @@ scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano
                                                               pos = match("informazioni catastali",web)
                                                               return(web[pos+1])
                                                   } else {
-                                                              return(NA)
+                                                              return(NA_character_)
                                                   }
                                       }
                                       
@@ -561,7 +559,7 @@ scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano
                                                               pos = match("locali",web)
                                                               return(web[pos+1])
                                                   } else {
-                                                              return(NA)
+                                                              return(NA_character_)
                                                   }
                                                   
                                       }
@@ -608,7 +606,7 @@ scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano
                                                               pos = match("contratto",web)
                                                               return(web[pos+1])
                                                   } else {
-                                                              return(NA)
+                                                              return(NA_character_)
                                                   }
                                                   
                                       }
@@ -627,7 +625,7 @@ scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano
                                                               pos = match("disponibilità",web)
                                                               return(web[pos+1])
                                                   } else {
-                                                              return(NA)
+                                                              return(NA_character_)
                                                   }
                                                   
                                       }
@@ -646,7 +644,7 @@ scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano
                                                               pos = match("Classe energetica",web)
                                                               return(web[pos+1])
                                                   } else {
-                                                              return(NA)
+                                                              return(NA_character_)
                                                   }
                                                   
                                       }
@@ -665,7 +663,7 @@ scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano
                                                               pos = match("piano",web)
                                                               return(web[pos+1])
                                                   } else {
-                                                              return(NA)
+                                                              return(NA_character_)
                                                   }
                                                   
                                       }   
@@ -697,7 +695,7 @@ scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano
                                                               pos = match("riscaldamento",web)
                                                               return(web[pos+1])
                                                   } else {
-                                                              return(NA)
+                                                              return(NA_character_)
                                                   }
                                                   
                                       }
@@ -711,8 +709,7 @@ scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano
                                                               as.character() %>% 
                                                               # str_trunc(45) %>% 
                                                               str_extract('\\d+') %>% 
-                                                              as.factor()
-                                                  # as.numeric()
+                                                              forcats::as_factor()
                                                   return(ID)
                                       }
                                       
@@ -809,13 +806,7 @@ scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano
                                                               html_nodes(css = '.js-tab-media')  %>% 
                                                               html_text(trim = T) %>% 
                                                               str_squish() %>% 
-                                                              str_extract("[0-9]+") %>% 
-                                                              as.numeric()
-                                                  # str_remove_all("\n") %>% 
-                                                  # str_match("[0-9]+") %>%
-                                                  # unlist() %>% 
-                                                  # as.numeric()
-                                                  
+                                                              str_extract("[0-9]+")
                                                   return(web)
                                       }
                                       
@@ -833,7 +824,7 @@ scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano
                                                               pos = match("Posti Auto",posauto)
                                                               return(posauto[pos+1])
                                                   } else {
-                                                              return(NA)
+                                                              return(NA_character_)
                                                   }
                                                   
                                       }
@@ -851,7 +842,7 @@ scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano
                                                               pos = match("Tipo proprietà",web)
                                                               return(web[pos+1])
                                                   } else {
-                                                              return(NA)
+                                                              return(NA_character_)
                                                   }
                                       }
                                       
@@ -906,7 +897,7 @@ scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano
                                                               pos = match("totale piani edificio",web)
                                                               return(web[pos+1])
                                                   } else {
-                                                              return(NA)
+                                                              return(NA_character_)
                                                   }
                                                   
                                       }
@@ -1079,13 +1070,13 @@ scrape.all.info = function(url = "https://www.immobiliare.it/affitto-case/milano
 
 
 
-## 3. REST API ENDPOINT  ----
+## 3.0 REST API ENDPOINT  ----
 # define APIs
 
 #* @apiTitle immobiliare.it data
 
 
-#* Get complete raw data  
+#* Get fast raw data (5 covariates: title, price, num of rooms, sqmeter, primarykey)
 #* @param url you you want to extract information by
 #* @param npages the number of pages you want to scrape
 #* @get /scrape
@@ -1110,4 +1101,20 @@ function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevan
             )
             
 }
+
+
+#* Get the complete data from single links (not the raw)
+#* @param url you you want to extract info from
+#* @param npages num of pages you are interested starting from the url param
+#* @get /complete
+function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
+         npages = 10){
+            links = all.links(url,npages)
+            list(
+                        complete = scrape.all.info(links)
+                        
+            )
+            
+}
+
 
