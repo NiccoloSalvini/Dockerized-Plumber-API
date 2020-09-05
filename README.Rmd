@@ -58,19 +58,34 @@ knitr::include_graphics("img/apiinfr.PNG")
 ## API Documentation:  
 
 - Get fast raw data, 5 covariates: title, price, num of rooms, sqmeter, primarykey
-
+```r
       GET */scrape
 
       param url the category link from which you are interested to extract data
       param npages number of pages that are going to be scraped
       content-type: application/json 
-
+```
 - Get all the links 
 
+```r
       GET */link
 
       param url the category link from which you are interested to extract data
       param npages  num of pages you are interested in
       content-type: application/json 
+```   
+      
+-  Get the complete data from single links (not the raw)
+
+```r
+
+      GET */complete
+
+      param url you you want to extract info from
+      param npages num of pages you are interested starting from the url param
+      content-type: application/json
+            
+
+```
 
  

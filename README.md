@@ -11,7 +11,7 @@ Dockerized API Scraping [Immobiliare.it](https://www.immobiliare.it/)
 ## API Infrastructure
 
 *author*: **[Niccolò Salvini](https://niccolosalvini.netlify.app/)**
-*date*: 04 settembre, 2020
+*date*: 05 settembre, 2020
 
 <br>
 
@@ -44,17 +44,39 @@ to scrap .<br><br>
 
   - Get fast raw data, 5 covariates: title, price, num of rooms,
     sqmeter, primarykey
-    
-        GET */scrape
-        
-        param url the category link from which you are interested to extract data
-        param npages number of pages that are going to be scraped
-        content-type: application/json 
+
+<!-- end list -->
+
+``` r
+      GET */scrape
+
+      param url the category link from which you are interested to extract data
+      param npages number of pages that are going to be scraped
+      content-type: application/json 
+```
 
   - Get all the links
-    
-        GET */link
-        
-        param url the category link from which you are interested to extract data
-        param npages  num of pages you are interested in
-        content-type: application/json
+
+<!-- end list -->
+
+``` r
+      GET */link
+
+      param url the category link from which you are interested to extract data
+      param npages  num of pages you are interested in
+      content-type: application/json 
+```
+
+  - Get the complete data from single links (not the raw)
+
+<!-- end list -->
+
+``` r
+
+      GET */complete
+
+      param url you you want to extract info from
+      param npages num of pages you are interested starting from the url param
+      content-type: application/json
+            
+```
