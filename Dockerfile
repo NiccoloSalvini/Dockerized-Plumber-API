@@ -3,7 +3,7 @@
 FROM rocker/r-ver:4.0.0
 
 # install packages
-RUN R -e "install.packages(c('plumber','tibble','magrittr','rvest','tidyr','httr','stringi','lubridate','jsonlite','doParallel','stringr'))"
+RUN R -e "install.packages(c('plumber','tibble','magrittr','rvest','tidyr','httr','stringi','lubridate','jsonlite','doParallel','stringr'), dependencies=TRUE, repos='http://cran.rstudio.com/')"
 
 # copy everything from the current directory into the container
 COPY / /
