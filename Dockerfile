@@ -19,8 +19,7 @@ RUN apt-get update -qq && apt-get -y \
   libsasl2-dev \
   git-core \
   libssl-dev \
-  libcurl4-gnutls-dev
-  && install2.r --error \
+  libcurl4-gnutls-dev && install2.r --error \
     --deps TRUE \
     plumber \
     tidyverse \
