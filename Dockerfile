@@ -2,6 +2,14 @@
 # now with RStudio pack manager it takes less time to build an image
 FROM rocker/r-ver:4.0.0
 
+# install linux libraries needed
+RUN apt-get update -qq && apt-get install -y \
+  libssl-dev \
+  libcurl4-gnutls-dev \
+  libxml2-dev \
+  git-core \
+  
+
 # install packages
 RUN R -e "install.packages(c('plumber','tibble','magrittr','rvest','tidyr','httr','stringi','lubridate','jsonlite','doParallel','stringr'))"
 
