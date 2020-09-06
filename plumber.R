@@ -11,31 +11,28 @@
 
 library(plumber)
 
-library(tidyverse)
-library(hms)
+library(dplyr) #t
+library(tibble) #t
 library(magrittr)
 library(rvest)
+library(tidyr) #t
 library(httr)
 library(stringi)
 library(lubridate)
 library(jsonlite)
-library(robotstxt)
-library(ggplot2)
 library(doParallel)
-library(taskscheduleR)
-library(stringr)
+library(stringr) #t
 
-lista.pacchetti = c("tidyverse",
-                    "hms",
+lista.pacchetti = c("dplyr",
+                    "tibble",
                     "magrittr",
                     "rvest",
+                    "tidyr",
                     "httr",
                     "stringi",
                     "lubridate",
                     "jsonlite",
-                    "robotstxt",
                     "doParallel",
-                    "ggplot2",
                     "stringr")
 
 
@@ -1074,6 +1071,8 @@ scrape.all.info = function(links,
 # define APIs
 
 #* @apiTitle immobiliare.it data
+#* @apiDescription GET estensive data from immobiliare.it real estate rental
+#* @apiVersion 0.0.1
 
 
 #* Get fast raw data (5 covariates: title, price, num of rooms, sqmeter, primarykey)

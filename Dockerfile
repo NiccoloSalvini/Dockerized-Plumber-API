@@ -1,22 +1,15 @@
-FROM rocker/tidyverse:latest
+# start from the rocker/r-ver:4.0.0 image
+# now with RStudio pack manager it takes less time to build an image
+FROM rocker/r-ver:4.0.0
 
-MAINTAINER Tobias Verbeke "tobias.verbeke@openanalytics.eu"
- 
+# install packages
+RUN R -e "install.packages(c('plumber','tibble','magrittr','rvest','tidyr','httr','stringi','lubridate','jsonlite','doParallel','stringr'))"
 
-# install R packages
-RUN R -e "install.packages(c('pacman', 'lubridate', 'plumber'), dependencies = TRUE)"
-	
-# make dir	
-RUN mkdir -p /src/shared-data
+# copy everything from the current directory into the container
+COPY / /
 
-COPY /src    /src  
-WORKDIR /src
+# open port 8000 to traffic
+EXPOSE 8000
 
-# make all app files readable, gives rwe permisssion (solves issue when dev in Windows, but building in Ubuntu)
-RUN chmod -R 755 /src
-
-# expose port
-EXPOSE 3838
-
-CMD ["R", "-e", "pr <- plumber::plumb('/src/API.R'); pr$run(host='0.0.0.0', port=3838)"]
-
+# when the container starts, start the main.R script
+ENTRYPOINT ["Rscript", "main.R"]
