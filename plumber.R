@@ -1090,6 +1090,11 @@ scrape.all.info = function(links,
 #* @get /scrape
 function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
          npages = 10){
+            
+            if (npages > 300 || npages < 0  ){
+                        stop("pts must be between 1 and 300")
+            }
+            
             list(
                         data = scrape.all(url,npages)
             )
@@ -1117,6 +1122,11 @@ function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevan
 #* @get /complete
 function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
          npages = 10){
+            
+            if (npages > 300 || npages < 0  ){
+                        stop("pts must be between 1 and 300")
+            }
+            
             links = all.links(url,npages)
             list(
                         complete = scrape.all.info(links)

@@ -26,4 +26,4 @@ EXPOSE 8000
 COPY / /
 
 # when the container starts, start the main.R script
-CMD service nginx start && R -e "source('main.R')"
+CMD R -e "source('main.R')"
