@@ -225,8 +225,7 @@ scrape.all = function(url =  "https://www.immobiliare.it/affitto-case/milano/?cr
                                          ## START GROUPING FUN ----
                                          get.data.caturl = function(url){
                                                      
-                                                     session = html_session(url,
-                                                                            user_agent(agent = agents[sample(1)]))
+                                                     session = html_session(url,user_agent(agent = agents[sample(1)]))
                                                      
                                                      ad       = tryCatch({scrapetitle.imm(session)}, error = function(e){ message("some problem occured in scrapetitle.imm") })
                                                      price    = tryCatch({scrapeprice.imm(session)}, error = function(e){ message("some problem occured in scrapeprice.imm") })
@@ -756,24 +755,33 @@ scrape.all.info = function(links,
                                                               html_text() %>%
                                                               fromJSON()
                                                   
-                                                  lowprice = json$listing$properties$costs$loweredPrice
-                                                  if (len(lowprice) == 1) {
+                                                  lowprice = json$listing$properties$price$loweredPrice
+                                                  if (is.na(lowprice) || is.null(lowprice)) {
                                                               tibble(
-                                                                          discountperc = NA_character_,
-                                                                          passedDays = NA_character_
+                                                                          originalPrice =NA_character_,
+                                                                          currentPrice  = NA_character_,
+                                                                          passedDays = NA_character_,
+                                                                          date = NA_character_,
+                                                                          
                                                               ) %>% 
                                                                           return()
                                                   } else {
-                                                              discountperc = lowprice$discountPercentage
-                                                              passedDays =lowprice$passedDays
+                                                              originalPrice =lowprice$originalPrice
+                                                              currentPrice  = lowprice$currentPrice
+                                                              passedDays = lowprice$passedDays
+                                                              date = lowprice$passedDays
+                                                              
                                                               tibble(
-                                                                          discountperc,
-                                                                          passedDays
+                                                                          originalPrice,
+                                                                          currentPrice,
+                                                                          passedDays,
+                                                                          date
                                                               ) %>%  
                                                                           mutate_all(as.character) %>% 
                                                                           return()
                                                   }
                                       }
+                                      
                                       
                                       ###
                                       
@@ -904,7 +912,7 @@ scrape.all.info = function(links,
                                       scrapetype.imm = function(session) {
                                                   
                                                   web = read_html(session)
-                                                  cssquery = web %>% 
+                                                              cssquery = web %>% 
                                                               html_nodes(css ='.im-features__value , .im-features__title') %>%
                                                               html_text() %>%
                                                               str_trim()
@@ -983,7 +991,7 @@ scrape.all.info = function(links,
                                                   # dormi()
                                                   
                                                   session = html_session(singolourl, user_agent(agents[sample(1)]))
-                                                  if (class(session) == "session") {
+                                                  if (class(session)=="session") {
                                                               session = session$response  
                                                   }
                                                   
@@ -1016,33 +1024,34 @@ scrape.all.info = function(links,
                                                   lowprice   = tryCatch({scrapeloweredprice.imm(session)}, error = function(e){ message("some problem occured in scrapeloweredprice.imm") })
                                                   
                                                   
-                                                  combine = tibble(ID        = id,
-                                                                   LAT       = lat, 
-                                                                   LONG      = long,
-                                                                   LOCATION  = location,
-                                                                   CONDOM    = condom,
-                                                                   BUILDAGE  = buildage,
-                                                                   FLOOR     = floor,
-                                                                   INDIVSAPT = indivsapt,
-                                                                   LOCALI    = locali,
-                                                                   METRATURA = metrat,
-                                                                   TPPROP    = tpprop,
-                                                                   STATUS    = status,
-                                                                   HEATING   = heating,
-                                                                   AC        = ac,
-                                                                   PUB_DATE  = date,
-                                                                   CATASTINFO= catastinfo,
-                                                                   APTCHAR   = aptchar,
-                                                                   PHOTOSNUM = photosnum,
-                                                                   AGE       = age,
-                                                                   LOWRDPRICE= lowprice,
-                                                                   ENCLASS   = enclass,
-                                                                   CONTR     = contr,
-                                                                   DISP      = disp,
-                                                                   TOTPIANI  = totpiani,
-                                                                   PAUTO     = postauto,
-                                                                   REVIEW    = review,
-                                                                   HASMULTI  = multi)
+                                                  combine = tibble(
+                                                              ID        = id,
+                                                              LAT       = lat,
+                                                              LONG      = long,
+                                                              LOCATION  = location,
+                                                              CONDOM    = condom,
+                                                              BUILDAGE  = buildage,
+                                                              FLOOR     = floor,
+                                                              INDIVSAPT = indivsapt,
+                                                              LOCALI    = locali,
+                                                              TPPROP    = tpprop,
+                                                              STATUS    = status,
+                                                              HEATING   = heating,
+                                                              AC        = ac,
+                                                              PUB_DATE  = date,
+                                                              CATASTINFO= catastinfo,
+                                                              APTCHAR   = aptchar,
+                                                              PHOTOSNUM = photosnum,
+                                                              AGE       = age,
+                                                              ENCLASS   = enclass,
+                                                              CONTR     = contr,
+                                                              DISP      = disp,
+                                                              TOTPIANI  = totpiani,
+                                                              PAUTO     = postauto,
+                                                              REVIEW    = review,
+                                                              METRATURA = metrat,
+                                                              HASMULTI  = multi,
+                                                              LOWRDPRICE= lowprice)
                                                   
                                                   combine %>% 
                                                               select(ID, CONDOM, FLOOR, LAT, LONG, INDIVSAPT, 
