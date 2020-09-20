@@ -20,18 +20,8 @@ doParallel \
 stringr
 
 
-# setup nginx
-RUN apt-get update && \
-apt-get install -y nginx apache2-utils && \
-htpasswd -bc /etc/nginx/.htpasswd test test
+EXPOSE 8000
 
-ADD ./nginx.conf /etc/nginx/nginx.conf
-
-EXPOSE 80
-
-ADD . /app
-WORKDIR /app
-    
 # copy everything from the current directory into the container
 COPY / /
 
