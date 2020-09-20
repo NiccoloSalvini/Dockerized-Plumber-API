@@ -45,9 +45,10 @@ _date_: `r format(Sys.Date(), "%d %B, %Y")`
 
 <br> 
 
-
-
-These **REST APIs** provide a way for platform/language independent access to the public [Immobiliare.it](https://www.immobiliare.it/) dataset of real estate rental market. The dataset is going to be updated  daily, some of the entries can be deleted and replaced by some other. In order to keep track to changes in the dataset I strongly suggest to store the daily meausuraments and then merge them through a scheduler (lately I am thinking on doing it). The `plumber.R` has two main functions scrape.all, scrape.all.info. Final Information come from two different scrapping functions due to speed up processes. The former gathers data from the grouping url, where the website displays 25 rental ads at the same time, data available is reatricted to 5 covariates. The latter gathers all the rest and it goes deep in single rental house advertisement. It is easy to grasp that scrapping from the agglomerative link, from now on category link, requests a single session, meanwhile the other investigate one single link at a time.  Data comes in a **JSON** fromat. Parameters let you set the *url* from which you want to extract information and the number of pages, *npages*, that you may want to scrap  .<br><br>
+ 
+This **REST API** provides a way for platform/language independent access to the public [Immobiliare.it](https://www.immobiliare.it/) database of Real Estate rental market. By default it provides to the scraping functions the corrisponding Milan url connected to its Real Estate market, it will be possible for sure to provide only the city information in the very next future. It can be extended also for other cities by providing different urls. API are managed by `Plumber` which is a R framework to build APIs. They are containerized in a Docker container which will be hosted on AWS EC2 server. 
+On top of that each day a scheduler runs scraping functions and store daily data on a DB that can be queried by this API ( _in itinere_ ):
+<br><br>
 
 
 ```{r FIRENZE, echo=FALSE, imgcenter = TRUE, fig.retina=1}
