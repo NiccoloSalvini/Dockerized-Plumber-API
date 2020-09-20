@@ -51,7 +51,7 @@ These **REST APIs** provide a way for platform/language independent access to th
 
 
 ```{r FIRENZE, echo=FALSE, imgcenter = TRUE, fig.retina=1}
-knitr::include_graphics("img/apiinfr.PNG") 
+knitr::include_graphics("img/dpapi.png") 
 ```
 
 

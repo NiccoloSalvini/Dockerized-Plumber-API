@@ -11,7 +11,7 @@ Dockerized API Scraping [Immobiliare.it](https://www.immobiliare.it/)
 ## API Infrastructure
 
 *author*: **[Niccolò Salvini](https://niccolosalvini.netlify.app/)**
-*date*: 05 settembre, 2020
+*date*: 20 settembre, 2020
 
 <br>
 
@@ -36,7 +36,7 @@ to scrap .<br><br>
 
 <p align="center">
 
-<img src="img/apiinfr.PNG" width="1200" />
+<img src="img/dpapi.png" width="562" />
 
 </p>
 
