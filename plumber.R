@@ -41,6 +41,14 @@ lista.pacchetti = c("dplyr",
 ## 2.0 MAIN FUNCTIONS ----
 
 
+## [ utils ] ----
+## some useful handlers
+
+is_url = function(url){
+            re = "^(?:(?:http(?:s)?|ftp)://)(?:\\S+(?::(?:\\S)*)?@)?(?:(?:[a-z0-9\u00a1-\uffff](?:-)*)*(?:[a-z0-9\u00a1-\uffff])+)(?:\\.(?:[a-z0-9\u00a1-\uffff](?:-)*)*(?:[a-z0-9\u00a1-\uffff])+)*(?:\\.(?:[a-z0-9\u00a1-\uffff]){2,})(?::(?:\\d){2,5})?(?:/(?:\\S)*)?$"
+            grepl(re, url)
+}
+
 ## [ scrape.all ] ----
 ## it scrapes all the available information in the grouping section
 
@@ -1084,16 +1092,44 @@ scrape.all.info = function(links,
 #* @apiVersion 0.0.1
 
 
+
+#* Print to log
+#* @filter logger
+logger = function(req){
+            
+            cat("\n", as.character(Sys.time()), 
+                "\n", req$REQUEST_METHOD, req$PATH_INFO, 
+                "\n", req$HTTP_USER_AGENT, "@", req$REMOTE_ADDR)
+            
+            plumber::forward()
+            
+}
+
+
+
 #* Get fast raw data (5 covariates: title, price, num of rooms, sqmeter, primarykey)
 #* @param url you you want to extract information by
 #* @param npages the number of pages you want to scrape
 #* @get /scrape
 function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
-         npages = 10){
+         npages = 10, 
+         res){
+            
+            if (!is_url(url)){
+                        
+                        stop("url you inputted seems not to be a proper url.")
+                        
+            }
             
             if (npages > 300 || npages < 0  ){
-                        stop("pts must be between 1 and 300")
+
+                        stop("npages must be a positive integer between 1 and 300")
             }
+            
+            if (!is.numeric(npages)){
+                        stop("npages must be numeric")
+            }
+            
             
             list(
                         data = scrape.all(url,npages)
@@ -1108,7 +1144,17 @@ function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevan
 #* @param npages num of pages you are interested in
 #* @get /links
 function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
-         npages = 10){
+         npages = 10,
+         res){
+            
+            if (!is_url(url)){
+                        stop("url you inputted seems not to be a proper url")
+                        
+            }
+            
+            if (!is.numeric(npages)){
+                        stop("npages must be numeric")
+            }
             list(
                         links = all.links(url,npages)
             )
@@ -1123,8 +1169,17 @@ function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevan
 function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
          npages = 10){
             
+            if (!is_url(url)){
+                        stop("url you inputted seems not to be a proper url")
+                        
+            }
+            
             if (npages > 300 || npages < 0  ){
                         stop("pts must be between 1 and 300")
+            }
+            
+            if (!is.numeric(npages)){
+                        stop("npages must be numeric")
             }
             
             links = all.links(url,npages)
