@@ -54,8 +54,8 @@ is_url = function(url){
 
 scrape.all = function(url =  "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
                       npages = 10){
-            ## url is precomposed by my choices
-            ## build the array url
+            ## default url corresponds to Milan rental Real Estate
+            ## build the url array 
             list.of.pages.imm = str_c(url, '&pag=', 2:npages) %>% 
                         append(url, after = 0)
             
@@ -1107,9 +1107,12 @@ logger = function(req){
 
 
 
+
+
+
 #* Get fast raw data (5 covariates: title, price, num of rooms, sqmeter, primarykey)
-#* @param url you you want to extract information by
-#* @param npages the number of pages you want to scrape
+#* @param url _string_ you you want to extract information by
+#* @param npages _positive integer_ the number of pages to be scrapped starting from page 1 (at least first 2 pages)
 #* @get /scrape
 function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
          npages = 10, 
@@ -1123,10 +1126,6 @@ function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevan
             
             if (npages > 300 || npages < 0  ){
 
-                        stop("npages must be a positive integer between 1 and 300")
-            }
-            
-            if (!is.numeric(npages)){
                         stop("npages must be numeric")
             }
             
@@ -1140,8 +1139,8 @@ function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevan
 
 
 #* Get all the links  
-#* @param url you you want to extract info
-#* @param npages num of pages you are interested in
+#* @param url _string_ you you want to extract info
+#* @param npages _positive integer_ num of pages to be scrapped starting from page 1 (at least first 2 pages)
 #* @get /links
 function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
          npages = 10,
@@ -1149,12 +1148,9 @@ function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevan
             
             if (!is_url(url)){
                         stop("url you inputted seems not to be a proper url")
-                        
+           
             }
             
-            if (!is.numeric(npages)){
-                        stop("npages must be numeric")
-            }
             list(
                         links = all.links(url,npages)
             )
@@ -1163,8 +1159,8 @@ function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevan
 
 
 #* Get the complete data from single links (not the raw)
-#* @param url you you want to extract info from
-#* @param npages num of pages you are interested starting from the url param
+#* @param url _string_ you you want to extract info from
+#* @param npages _positive integer_ num of pages you are interested starting from the url param (at least first 2 pages)
 #* @get /complete
 function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
          npages = 10){
@@ -1178,10 +1174,7 @@ function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevan
                         stop("pts must be between 1 and 300")
             }
             
-            if (!is.numeric(npages)){
-                        stop("npages must be numeric")
-            }
-            
+  
             links = all.links(url,npages)
             list(
                         complete = scrape.all.info(links)
