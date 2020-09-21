@@ -4,6 +4,12 @@ FROM rocker/r-base
 # mantainer information
 MAINTAINER "Niccolo Salvini" niccolo.salvini27@gmail.com
 
+# install linux dependencies
+RUN apt-get update -qq && apt-get install -y \
+  git-core \
+  libssl-dev \
+  libcurl4-gnutls-dev
+
 # install R packages
 RUN install2.r \
 plumber \
