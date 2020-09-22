@@ -6,12 +6,19 @@ Dockerized API Scraping [Immobiliare.it](https://www.immobiliare.it/)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+x
+
 <img src="img/logo.png" align="right" height="80" />
 
 ## API Infrastructure
 
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
+<a href="https://www.buymeacoffee.com/gbraad" target="_blank"><img src="img/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="niccosalvini" data-color="#FFDD00" data-emoji=""  data-font="Cookie" data-text="Buy me a coffee" data-outline-color="#000" data-font-color="#000" data-coffee-color="#fff" ></script>
+
 *author*: **[Niccolò Salvini](https://niccolosalvini.netlify.app/)**
-*date*: 20 settembre, 2020
+*date*: 22 settembre, 2020
 
 <br>
 
@@ -43,8 +50,8 @@ that can be queried by this API ( *in itinere* ): <br><br>
 ``` r
       GET */scrape
 
-      param url the category link from which you are interested to extract data
-      param npages number of pages that are going to be scraped
+      param url _string_ the category link from which you are interested to extract data
+      param npages _positive integer_ number of pages to be scrapped starting from page 1 
       content-type: application/json 
 ```
 
@@ -55,8 +62,8 @@ that can be queried by this API ( *in itinere* ): <br><br>
 ``` r
       GET */link
 
-      param url the category link from which you are interested to extract data
-      param npages  num of pages you are interested in
+      param url _string_  the category link from which you are interested to extract data
+      param npages  _positive integer_  num of pages you are interested in
       content-type: application/json 
 ```
 
@@ -68,8 +75,8 @@ that can be queried by this API ( *in itinere* ): <br><br>
 
       GET */complete
 
-      param url you you want to extract info from
-      param npages num of pages you are interested starting from the url param
+      param _string_ url you you want to extract info from
+      param npages _positive integer_  num of pages you are interested starting from the url param
       content-type: application/json
             
 ```
