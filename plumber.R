@@ -583,18 +583,24 @@ scrape.all.info = function(links,
                                                   
                                                   if ("spese condominio" %in% cssquery) {
                                                               pos = match("spese condominio",cssquery)
-                                                              return(cssquery[pos+1])
+                                                              condom = cssquery[pos+1] 
+                                                              return(condom) %>%  
+                                                                          str_extract("[0-9]+")
                                                   } else {
+                                                              
                                                               json = web %>%
-                                                                          html_nodes(xpath = "/html/body/script[2]") %>% 
+                                                                          html_nodes(xpath = "/html/body/script[2]") %>%
                                                                           html_text() %>%
                                                                           fromJSON()
                                                               condom = json$listing$properties$costs$condominiumExpensesValue
-                                                              return(condom)
-                                                              
-                                                              
+                                                              if(is.null(condom)){
+                                                                          return(NA_character_)
+                                                              } else {
+                                                                          return(condom)
+                                                              }
                                                   }
                                       }
+                                      
                                       
                                       ###
                                       
@@ -990,6 +996,119 @@ scrape.all.info = function(links,
                                                   }
                                       }
                                       
+                                      
+                                      ######### INS ----
+                                      
+                                      scrapenroomsINS.imm = function(session) {
+                                                  
+                                                  opensess = read_html(session)
+                                                  nroom  = opensess %>% 
+                                                              html_nodes(css =".im-mainFeatures__price+ .nd-list__item .im-mainFeatures__value") %>% 
+                                                              html_text() %>%
+                                                              str_trim() 
+                                                  
+                                                  if(is.null(nroom) || identical(nroom, character(0))) {
+                                                              nroom2 = opensess %>%
+                                                                          html_nodes(css ='.im-features__value , .im-features__title') %>% 
+                                                                          html_text() %>%
+                                                                          str_trim()
+                                                              
+                                                              if ("locali" %in% nroom2) {
+                                                                          pos = match("locali",nroom2)
+                                                                          return(nroom2[pos+1])  %>% 
+                                                                                      str_extract("[0-9]+")
+                                                              } else {
+                                                                          return(NA_character_)
+                                                              }
+                                                  } else {
+                                                              return(nroom)
+                                                              
+                                                  }
+                                                  
+                                      }
+                                      
+                                      ###
+                                      
+                                      scrapepriceINS.imm = function(session) {
+                                                  
+                                                  opensess = read_html(session)
+                                                  price  = opensess %>% 
+                                                              html_nodes(css =".im-mainFeatures__title") %>% 
+                                                              html_text() %>%
+                                                              str_trim() 
+                                                  
+                                                  if(is.null(price) || identical(price, character(0))) {
+                                                              price2 = opensess %>%
+                                                                          html_nodes(css ='.im-features__value , .im-features__title') %>% 
+                                                                          html_text() %>%
+                                                                          str_trim()
+                                                              
+                                                              if ("prezzo" %in% price2) {
+                                                                          pos = match("prezzo",price2)
+                                                                          return(price2[pos+1])  %>% 
+                                                                                      str_replace_all(c("€"="","\\."="")) %>% 
+                                                                                      str_extract( "\\-*\\d+\\.*\\d*") %>%  
+                                                                                      str_replace_na() %>% 
+                                                                                      str_replace("NA", "Prezzo Su Richiesta")
+                                                              } else {
+                                                                          return(NA_character_)
+                                                              }
+                                                  } else {
+                                                              return(price) %>% 
+                                                                          str_replace_all(c("€"="","\\."="")) %>% 
+                                                                          str_extract( "\\-*\\d+\\.*\\d*") %>%  
+                                                                          str_replace_na() %>% 
+                                                                          str_replace("NA", "Prezzo Su Richiesta")
+                                                              
+                                                  }
+                                                  
+                                      }
+                                      
+                                      ###
+                                      
+                                      scrapesqfeetINS.imm = function(session) {
+                                                  
+                                                  opensess = read_html(session)
+                                                  sqfeet  = opensess %>% 
+                                                              html_nodes(css =".nd-list__item:nth-child(3) .im-mainFeatures__value") %>% 
+                                                              html_text() %>%
+                                                              str_trim() 
+                                                  
+                                                  if(is.null(sqfeet) || identical(sqfeet, character(0))) {
+                                                              sqfeet2 = opensess %>%
+                                                                          html_nodes(css ='.im-features__value , .im-features__title') %>% 
+                                                                          html_text() %>%
+                                                                          str_trim()
+                                                              
+                                                              if ("superficie" %in% sqfeet2) {
+                                                                          pos = match("superficie",sqfeet2)
+                                                                          return(sqfeet2[pos+1])  %>% 
+                                                                                      str_extract("[0-9]+")
+                                                              } else {
+                                                                          return(NA_character_)
+                                                              }
+                                                  } else {
+                                                              return(sqfeet) %>%  
+                                                                          str_extract("[0-9]+")
+                                                              
+                                                  }
+                                                  
+                                      }
+                                      
+                                      ###
+                                      
+                                      scrapetitleINS.imm = function(session) {
+                                                  
+                                                  opensess = read_html(session)
+                                                  title  = opensess %>% 
+                                                              html_nodes(css =".im-titleBlock__title") %>% 
+                                                              html_text() %>%
+                                                              str_trim()
+                                                  return(title)
+                                                  
+                                      }
+                                      
+                                      
                                       ### END FUNCTIONS_SINGOLOURL ----
                                       
                                       
@@ -1030,6 +1149,12 @@ scrape.all.info = function(links,
                                                   metrat     = tryCatch({scrapemetrature.imm(session)}, error = function(e){ message("some problem occured in scrapemetrature.imm") })
                                                   multi      = tryCatch({scrapehasmulti.imm(session)}, error = function(e){ message("some problem occured in scrapehasmulti.imm") })
                                                   lowprice   = tryCatch({scrapeloweredprice.imm(session)}, error = function(e){ message("some problem occured in scrapeloweredprice.imm") })
+                                                  ###
+                                                  nrooms     = tryCatch({scrapenroomsINS.imm(session)}, error = function(e){ message("some problem occured in scrapenroomsINS.imm") })
+                                                  price      = tryCatch({scrapepriceINS.imm(session)}, error = function(e){ message("some problem occured in scrapepriceINS.imm") })
+                                                  sqfeet     = tryCatch({scrapesqfeetINS.imm(session)}, error = function(e){ message("some problem occured in scrapesqfeetINS.imm") })
+                                                  title      = tryCatch({scrapetitleINS.imm(session)}, error = function(e){ message("some problem occured in scrapetitleINS.imm") })
+                                                  
                                                   
                                                   
                                                   combine = tibble(
@@ -1059,13 +1184,18 @@ scrape.all.info = function(links,
                                                               REVIEW    = review,
                                                               METRATURA = metrat,
                                                               HASMULTI  = multi,
-                                                              LOWRDPRICE= lowprice)
+                                                              LOWRDPRICE= lowprice,
+                                                              ###
+                                                              NROOMS    = nrooms,
+                                                              PRICE     = price,
+                                                              SQFEET    = sqfeet,
+                                                              TITLE     = title)
                                                   
                                                   combine %>% 
                                                               select(ID, CONDOM, FLOOR, LAT, LONG, INDIVSAPT, 
                                                                      LOCALI, STATUS, HEATING, AC, PUB_DATE, APTCHAR, 
                                                                      PHOTOSNUM, AGE, ENCLASS, DISP,TPPROP,  METRATURA, LOWRDPRICE, PAUTO, REVIEW, TOTPIANI, 
-                                                                     BUILDAGE, CONTR, LOCATION, CATASTINFO, HASMULTI)
+                                                                     BUILDAGE, CONTR, LOCATION, CATASTINFO, HASMULTI, NROOMS, PRICE, SQFEET, TITLE)
                                                   
                                                   return(combine) 
                                                   
