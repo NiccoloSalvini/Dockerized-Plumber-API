@@ -16,21 +16,21 @@ x
 <a href="https://www.buymeacoffee.com/gbraad" target="_blank"><img src="img/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
 *author*: **[Niccolò Salvini](https://niccolosalvini.netlify.app/)**
-*date*: 22 settembre, 2020
+*date*: 23 settembre, 2020
 
 <br>
 
 This **REST API** provides a way for platform/language independent
 access to the public [Immobiliare.it](https://www.immobiliare.it/)
 database of Real Estate rental market. By default it provides to the
-scraping functions the corrisponding Milan url connected to its Real
+scraping functions the corresponding Milan url connected to its Real
 Estate market, it will be possible for sure to provide only the city
 information in the very next future. It can be extended also for other
-cities by providing different urls. API are managed by `Plumber` which
-is a R framework to build APIs. They are containerized in a Docker
-container which will be hosted on AWS EC2 server. On top of that each
-day a scheduler runs scraping functions and store daily data on a DB
-that can be queried by this API ( *in itinere* ): <br><br>
+cities by providing different urls. API are built with `Plumber`. They
+are containerized in a Docker container which will be hosted on AWS EC2
+server. On top of that each day a scheduler runs scraping functions and
+*store daily data on a DB that can be queried given credentials* (in
+itinere): <br><br>
 
 <p align="center">
 
@@ -40,7 +40,7 @@ that can be queried by this API ( *in itinere* ): <br><br>
 
 ## API Documentation:
 
-  - Get fast raw data, 5 covariates: title, price, num of rooms,
+  - Get FAST data, it covers 5 covariates: title, price, num of rooms,
     sqmeter, primarykey
 
 <!-- end list -->
@@ -48,8 +48,8 @@ that can be queried by this API ( *in itinere* ): <br><br>
 ``` r
       GET */scrape
 
-      param url _string_ the category link from which you are interested to extract data
-      param npages _positive integer_ number of pages to be scrapped starting from page 1 
+      param url [url string] the link from which you are interested to extract data 
+      param npages [positive integer] number of pages to scrape (1-300) 
       content-type: application/json 
 ```
 
@@ -60,21 +60,21 @@ that can be queried by this API ( *in itinere* ): <br><br>
 ``` r
       GET */link
 
-      param url _string_  the category link from which you are interested to extract data
-      param npages  _positive integer_  num of pages you are interested in
+      param url [url string]  the link from which you are interested to extract data
+      param npages  [positive integer] number of pages to scrape (1-300) 
       content-type: application/json 
 ```
 
-  - Get the complete data from single links (not the raw)
+  - Get the complete set of covariates (52) from each single links,
+    takes a while
 
 <!-- end list -->
 
 ``` r
-
       GET */complete
 
-      param _string_ url you you want to extract info from
-      param npages _positive integer_  num of pages you are interested starting from the url param
+      param url  _url string_ url the link from which you are interested to extract data
+      param npages [positive integer] number of pages to scrape (1-300) 
       content-type: application/json
             
 ```

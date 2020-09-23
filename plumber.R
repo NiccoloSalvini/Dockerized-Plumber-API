@@ -1241,8 +1241,8 @@ logger = function(req){
 
 
 #* Get fast raw data (5 covariates: title, price, num of rooms, sqmeter, primarykey)
-#* @param url _string_ you you want to extract information by
-#* @param npages _positive integer_ the number of pages to be scrapped starting from page 1 (at least first 2 pages)
+#* @param url [url string] the link from which you are interested to extract data default: Milan
+#* @param npages [positive integer] number of pages to scrape (1-300) default: 10 min: 2
 #* @get /scrape
 function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
          npages = 10, 
@@ -1269,8 +1269,8 @@ function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevan
 
 
 #* Get all the links  
-#* @param url _string_ you you want to extract info
-#* @param npages _positive integer_ num of pages to be scrapped starting from page 1 (at least first 2 pages)
+#* @param url [url string] the link from which you are interested to extract data default: Milan
+#* @param npages [positive integer] number of pages to scrape (1-300) default: 10 min: 2
 #* @get /links
 function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
          npages = 10,
@@ -1289,8 +1289,8 @@ function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevan
 
 
 #* Get the complete data from single links (not the raw)
-#* @param url _string_ you you want to extract info from
-#* @param npages _positive integer_ num of pages you are interested starting from the url param (at least first 2 pages)
+#* @param url [url string] the link from which you are interested to extract data default: Milan
+#* @param npages [positive integer] number of pages to scrape (1-300) default: 10 min: 2
 #* @get /complete
 function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
          npages = 10){
