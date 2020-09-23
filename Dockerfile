@@ -8,24 +8,29 @@ MAINTAINER "Niccolo Salvini" niccolo.salvini27@gmail.com
 RUN apt-get update -qq && apt-get install -y \
   git-core \
   libssl-dev \
-  libcurl4-gnutls-dev
+  libcurl4-gnutls-dev \
+  libopenmpi-dev \
+  libzmq3-dev
+
+RUN install.r foreach iterators
+RUN install.r doParallel doMC doRNG
+
 
 # install R packages
-RUN install2.r \
-plumber \
-dplyr \
-tibble \
-magrittr \
-rvest \
-tidyr \
-httr \
-stringi \
-lubridate \
-jsonlite \
-doParallel \
-stringr
+RUN R -e "install.packages('plumber',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages('dplyr',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages('tibble',dependencies=TRUE, repos='http://cran.rstudio.com/')" 
+RUN R -e "install.packages('magrittr',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages('rvest',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages('tidyr',dependencies=TRUE, repos='http://cran.rstudio.com/')" 
+RUN R -e "install.packages('httr',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages('stringi',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages('lubridate',dependencies=TRUE, repos='http://cran.rstudio.com/')" 
+RUN R -e "install.packages('jsonlite',dependencies=TRUE, repos='http://cran.rstudio.com/')" 
+RUN R -e "install.packages('doParallel',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages('stringr',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 
-
+# exposing the port
 EXPOSE 8000
 
 # copy everything from the current directory into the container

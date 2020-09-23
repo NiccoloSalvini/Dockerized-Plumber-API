@@ -9,33 +9,20 @@
 
 ## 1.0 load the LIBRARIES needed plus the plumber ----
 
-library(plumber)
+vec.pacchetti = c("dplyr",
+                  "plumber",
+                  "tibble",
+                  "magrittr",
+                  "rvest",
+                  "tidyr",
+                  "httr",
+                  "stringi",
+                  "lubridate",
+                  "jsonlite",
+                  "doParallel",
+                  "stringr")
 
-library(dplyr) #t
-library(tibble) #t
-library(magrittr)
-library(rvest)
-library(tidyr) #t
-library(httr)
-library(stringi)
-library(lubridate)
-library(jsonlite)
-library(doParallel)
-library(stringr) #t
-
-lista.pacchetti = c("dplyr",
-                    "tibble",
-                    "magrittr",
-                    "rvest",
-                    "tidyr",
-                    "httr",
-                    "stringi",
-                    "lubridate",
-                    "jsonlite",
-                    "doParallel",
-                    "stringr")
-
-
+invisible(lapply(vec.pacchetti, library, character.only = TRUE))
 
 
 ## 2.0 MAIN FUNCTIONS ----
@@ -62,7 +49,7 @@ scrape.all = function(url =  "https://www.immobiliare.it/affitto-case/milano/?cr
             cl = makeCluster(detectCores()-1)
             registerDoParallel(cl)
             result = foreach(i = seq_along(list.of.pages.imm),
-                             .packages = lista.pacchetti,
+                             .packages = vec.pacchetti,
                              .combine = "bind_rows",
                              .multicombine = TRUE,
                              .verbose = FALSE,
@@ -275,7 +262,7 @@ all.links= function(url  = "https://www.immobiliare.it/affitto-case/milano/?crit
                         append(url, after = 0)
             
             listone = foreach(i = seq_along(list.of.pages.imm),
-                              .packages = lista.pacchetti,
+                              .packages = vec.pacchetti,
                               .combine = "c",
                               .multicombine = TRUE,
                               .verbose = FALSE,
@@ -348,7 +335,7 @@ scrape.all.info = function(links,
             registerDoParallel(cl)
             
             ALL = foreach(i = seq_along(links),
-                          .packages = lista.pacchetti,
+                          .packages = vec.pacchetti,
                           .combine = "bind_rows",
                           .multicombine = FALSE,
                           .export = "links",
