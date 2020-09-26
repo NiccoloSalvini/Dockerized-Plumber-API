@@ -1218,13 +1218,10 @@ logger = function(req){
                 "\n", req$REQUEST_METHOD, req$PATH_INFO, 
                 "\n", req$HTTP_USER_AGENT, "@", req$REMOTE_ADDR)
             
+            # Forward the request
             plumber::forward()
             
 }
-
-
-
-
 
 
 #* Get fast raw data (5 covariates: title, price, num of rooms, sqmeter, primarykey)
