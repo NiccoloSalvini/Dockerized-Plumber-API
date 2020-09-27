@@ -1,23 +1,16 @@
-# Uses RStudio package 4.0.0 (should be faster)
-FROM rocker/r-base
+# Uses RStudio package 4.0.0 (should be faster) diff
+FROM trestletech/plumber
 
 # mantainer information
 MAINTAINER "Niccolo Salvini" niccolo.salvini27@gmail.com
 
-# install linux dependencies
-RUN apt-get update -qq && apt-get install -y \
-  git-core \
-  libssl-dev \
-  libcurl4-gnutls-dev \
-  libopenmpi-dev \
-  libzmq3-dev
-
-RUN install.r foreach iterators
-RUN install.r doParallel doMC doRNG
+# linux dep
+RUN apt-get update  && apt-get install -y \
+    liblapack-dev \
+    libpq-dev
 
 
 # install R packages
-RUN R -e "install.packages('plumber',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('dplyr',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('tibble',dependencies=TRUE, repos='http://cran.rstudio.com/')" 
 RUN R -e "install.packages('magrittr',dependencies=TRUE, repos='http://cran.rstudio.com/')"
@@ -36,5 +29,9 @@ EXPOSE 8000
 # copy everything from the current directory into the container
 COPY / /
 
-# when the container starts, start the main.R script
-ENTRYPOINT ["Rscript", "main.R"]
+# when the container starts, start the main.R script diff
+ENTRYPOINT ["R", "-e", \
+"r = plumber::plumb('plumber.R'); \
+r$run(host = '0.0.0.0', port= 8000)"]
+
+CMD ["/plumber.R"]
