@@ -37,4 +37,4 @@ EXPOSE 8000
 COPY / /
 
 # when the container starts, start the main.R script
-CMD R -e "source('main.R')"
+ENTRYPOINT ["Rscript", "main.R"]
