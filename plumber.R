@@ -10,7 +10,6 @@
 ## 1.0 load the LIBRARIES needed plus the plumber ----
 
 vec.pacchetti = c("dplyr",
-                  "plumber",
                   "tibble",
                   "magrittr",
                   "rvest",
