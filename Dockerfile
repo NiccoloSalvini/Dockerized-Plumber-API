@@ -3,7 +3,6 @@ FROM rocker/tidyverse:latest
 MAINTAINER Niccolo Salvini "niccolo.salvini27@gmail.com"
 
 RUN apt-get update && apt-get install -y \
-    libmariadb-client-lgpl-dev \
     libxml2-dev \
     libudunits2-dev
 
