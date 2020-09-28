@@ -11,9 +11,6 @@ RUN R -e "install.packages(c('magrittr', 'lubridate', 'plumber', 'rvest', 'strin
 
 COPY / /
 
-# make all app files readable, gives rwe permission (solves issue when dev in Windows, but building in Ubuntu)
-RUN chmod -R 755 /src
-
 # expose port
 EXPOSE 8000
 
