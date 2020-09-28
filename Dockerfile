@@ -5,7 +5,7 @@ FROM trestletech/plumber
 MAINTAINER "Niccolo Salvini" niccolo.salvini27@gmail.com
 
 # linux dep
-RUN apt-get update  && apt-get install -y \
+RUN apt-get update --allow-releaseinfo-change && apt-get install -y \
     liblapack-dev \
     libpq-dev
 
