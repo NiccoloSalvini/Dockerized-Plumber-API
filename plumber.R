@@ -332,8 +332,7 @@ all.links= function(url  = "https://www.immobiliare.it/affitto-case/milano/?crit
 ## 
 
 scrape.all.info = function(links,
-                           npages = 10,
-                           write = FALSE){
+                           npages = 10){
             
             cl = makeCluster(detectCores()-1)
             registerDoParallel(cl)
@@ -1197,8 +1196,6 @@ scrape.all.info = function(links,
             stopCluster(cl)
             return(ALL)
             
-            if(write == TRUE){
-                        write.csv(ALL, "/shared-data/case.csv")}
 }
 
 
