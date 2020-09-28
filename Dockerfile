@@ -4,10 +4,10 @@ FROM trestletech/plumber
 # mantainer information
 MAINTAINER "Niccolo Salvini" niccolo.salvini27@gmail.com
 
-RUN apt-get update && apt.get install -y \
+RUN apt-get update -qq && apt-get install -y \
   libmariadb-client-lgpl-dev \
   libxml2-dev \
-  libudunits2-dev \
+  libudunits2-dev 
   
 
 # install R packages
