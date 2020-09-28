@@ -4,16 +4,6 @@ FROM trestletech/plumber
 # mantainer information
 MAINTAINER "Niccolo Salvini" niccolo.salvini27@gmail.com
 
-# linux dep
-RUN apt-get update -qq && apt-get install -y \
-  git-core \
-  libssl-dev \
-  libcurl4-gnutls-dev \
-  libopenmpi-dev \
-  libzmq3-dev
-
-
-
 # install R packages
 RUN R -e "install.packages('dplyr',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('tibble',dependencies=TRUE, repos='http://cran.rstudio.com/')" 
