@@ -5,7 +5,10 @@ FROM trestletech/plumber
 MAINTAINER "Niccolo Salvini" niccolo.salvini27@gmail.com
 
 RUN apt-get update && apt.get install -y \
-  libxml2-dev 
+  libmariadb-client-lgpl-dev \
+  libxml2-dev \
+  libudunits2-dev \
+  
 
 # install R packages
 RUN R -e "install.packages('dplyr',dependencies=TRUE, repos='http://cran.rstudio.com/')"
