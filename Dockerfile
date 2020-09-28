@@ -1,5 +1,6 @@
 # Uses RStudio package 4.0.0 (should be faster) diff
-FROM rocker/r-ver:latest
+FROM rocker/r-ver:4.0.0
+
 MAINTAINER "Niccolo Salvini" niccolo.salvini27@gmail.com
 
 
