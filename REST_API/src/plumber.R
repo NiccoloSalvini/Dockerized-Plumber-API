@@ -24,6 +24,10 @@ vec.pacchetti = c("dplyr",
 invisible(lapply(vec.pacchetti, library, character.only = TRUE))
 
 
+print("Shared directory exists:")
+print(dir.exists("shared-data/"))
+
+
 ## 2.0 MAIN FUNCTIONS ----
 
 
@@ -328,7 +332,8 @@ all.links= function(url  = "https://www.immobiliare.it/affitto-case/milano/?crit
 ## 
 
 scrape.all.info = function(links,
-                           npages = 10){
+                           npages = 10,
+                           write = FALSE){
             
             cl = makeCluster(detectCores()-1)
             registerDoParallel(cl)
@@ -1191,6 +1196,9 @@ scrape.all.info = function(links,
             
             stopCluster(cl)
             return(ALL)
+            
+            if(write == TRUE){
+                        write.csv(ALL, "/shared-data/case.csv")}
 }
 
 

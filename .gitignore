@@ -1,7 +1,4 @@
-# do not track these files:
-shared-data/
-.Rhistory
 .Rproj.user
+.Rhistory
 .RData
-/cron/src/service-account-big-query.json
-
+.Ruserdata
