@@ -1,10 +1,8 @@
 # Uses RStudio package 4.0.0 (should be faster) diff
-FROM trestletech/plumber
-
-# mantainer information
+FROM rocker/r-ver:latest
 MAINTAINER "Niccolo Salvini" niccolo.salvini27@gmail.com
 
-RUN apt-get update -qq && apt-get install -y \
+RUN apt-get update && apt-get install -y \
   libmariadb-client-lgpl-dev \
   libxml2-dev \
   libudunits2-dev 
@@ -13,6 +11,7 @@ RUN apt-get update -qq && apt-get install -y \
 # install R packages
 RUN R -e "install.packages('dplyr',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('tibble',dependencies=TRUE, repos='http://cran.rstudio.com/')" 
+RUN R -e "install.packages('plumber',dependencies=TRUE, repos='http://cran.rstudio.com/')" 
 RUN R -e "install.packages('magrittr',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('rvest',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('tidyr',dependencies=TRUE, repos='http://cran.rstudio.com/')" 
