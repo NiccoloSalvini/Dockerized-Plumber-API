@@ -4,7 +4,7 @@ FROM rocker/r-ver:4.0.0
 MAINTAINER "Niccolo Salvini" niccolo.salvini27@gmail.com
 
 
-RUN apt-get update -qq && apt-get install -y \
+RUN apt-get install -y \
   libssl-dev \
   libcurl4-gnutls-dev \
   libmariadb-client-lgpl-dev \
