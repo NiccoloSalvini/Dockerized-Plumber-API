@@ -12,6 +12,13 @@ RUN R -e "install.packages(c('magrittr','lubridate', 'plumber', 'rvest', 'string
 # install DoParallel from source since not aval in 4.0.2
 RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/doParallel/doParallel_1.0.14.tar.gz', repos=NULL, type='source')"
 
+# install iterators dep for DoParallel
+RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/iterators/iterators_1.0.10.tar.gz', repos=NULL, type='source')"
+
+# install foreach dep for DoParalle
+RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/foreach/foreach_1.4.8.tar.gz', repos=NULL, type='source')"
+
+
 COPY / /
 
 # expose port
