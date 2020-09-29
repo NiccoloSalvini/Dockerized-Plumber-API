@@ -7,7 +7,10 @@ RUN apt-get update && apt-get install -y \
     libudunits2-dev
 
 # install R packages
-RUN R -e "install.packages(c('magrittr', 'lubridate', 'plumber', 'rvest', 'stringi', 'jsonlite','DoParallel'), dependencies = TRUE)"
+RUN R -e "install.packages(c('magrittr','lubridate', 'plumber', 'rvest', 'stringi', 'jsonlite','DoParallel'), dependencies = TRUE)"
+
+# install DoParallel from source since not aval in 4.0.2
+RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/doParallel/doParallel_1.0.14.tar.gz', repos=NULL, type='source')""
 
 COPY / /
 
