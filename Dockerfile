@@ -15,7 +15,7 @@ RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/itera
 # install 'foreach' dep for DoParalle
 RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/foreach/foreach_1.4.8.tar.gz', repos=NULL, type='source')"
 
-# install DoParallel from source since not aval in 4.0.2
+# install DoParallel from source since not avail in 4.0.2
 RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/doParallel/doParallel_1.0.14.tar.gz', repos=NULL, type='source')"
 
 COPY / /
@@ -23,4 +23,4 @@ COPY / /
 # expose port
 EXPOSE 8000
 
-CMD ["R", "-e", "r <- plumber::plumb('plumber.R'); r$run(host='0.0.0.0', port=8000)"]
+ENTRYPOINT ["Rscript", "main.R"]
