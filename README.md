@@ -82,8 +82,9 @@ log time big-O(log(n))
 ``` r
       GET */scrape
 
-      param url [url string] the link from which you are interested to extract data 
-      param npages [positive integer] number of pages to scrape (1-300) 
+      #* @param city [chr string] the city you are interested in (e.g. "roma", "milano", "firenze")
+      #* @param npages [positive integer] number of pages to scrape (1-300) default: 10 min: 2
+      #* @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
       content-type: application/json 
 ```
 
