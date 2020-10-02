@@ -1,4 +1,4 @@
-Dockerized API Scraping [Immobiliare.it](https://www.immobiliare.it/)
+Asynchronous API Scraping [Immobiliare.it](https://www.immobiliare.it/)
 ================
 
   - [API Infrastructure](#api-infrastructure)
@@ -16,25 +16,59 @@ x
 <a href="https://www.buymeacoffee.com/gbraad" target="_blank"><img src="img/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
 *author*: **[Niccolò Salvini](https://niccolosalvini.netlify.app/)**
-*date*: 23 settembre, 2020
+*date*: Last update: 02 ottobre, 2020
 
 <br>
 
-This **REST API** provides a way for platform/language independent
-access to the public [Immobiliare.it](https://www.immobiliare.it/)
-database of Real Estate rental market. By default it provides to the
-scraping functions the corresponding Milan url connected to its Real
-Estate market, it will be possible for sure to provide only the city
-information in the very next future. It can be extended also for other
-cities by providing different urls. API are built with `Plumber`. They
-are containerized in a Docker container which will be hosted on AWS EC2
-server. On top of that each day a scheduler runs scraping functions and
-*store daily data on a DB that can be queried given credentials* (in
-itinere): <br><br>
+This **RESTful API** provides a way to scrape the public
+[Immobiliare.it](https://www.immobiliare.it/) database of Real Estate
+rental market. Plumber does not have in-built features to handle calls
+to the endpoints **Asynchronously**, as a matter of fact this is handled
+inside the `plumber.R` MAIN function by the `foreach` package. Default
+options provides to the scraping functions the Real Estate market Milan
+url, (it will be possible for sure to provide only the city information
+in the very next future). It can be extended also for other cities by
+providing different urls. API are built with `Plumber` api framework.
+They are containerized with Docker. It will be hosted on AWS EC2 server/
+GCP with scheduler. On top of that each day a scheduler runs scraping
+functions and *store daily data on a DB that can be queried given
+credentials* (in itinere):
+
+<br><br>
+
+minimal reprex why `foreach` handles requests faster vs `furrr`
+(`future` spin-off). On x axis the number of urls processed, on y axis
+run time:
 
 <p align="center">
 
-<img src="img/dpapi.png" width="562" />
+<div class="figure">
+
+<img src="img/run_timefurrr.png" alt="linear time big-O(n)" width="696" />
+
+<p class="caption">
+
+linear time big-O(n)
+
+</p>
+
+</div>
+
+</p>
+
+<p align="center">
+
+<div class="figure">
+
+<img src="img/run_timeforeach.png" alt="log time  big-O(log(n))" width="696" />
+
+<p class="caption">
+
+log time big-O(log(n))
+
+</p>
+
+</div>
 
 </p>
 

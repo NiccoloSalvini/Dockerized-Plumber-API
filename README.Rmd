@@ -1,5 +1,5 @@
 ---
-title: "Dockerized API Scraping [Immobiliare.it](https://www.immobiliare.it/)"
+title: "Asynchronous API Scraping [Immobiliare.it](https://www.immobiliare.it/)"
 output: 
   github_document:
     toc: TRUE
@@ -9,8 +9,6 @@ output:
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
-
 
 
 ```{r global.options, include=FALSE}
@@ -43,19 +41,27 @@ x
 
 
 _author_: **[Niccolò Salvini](https://niccolosalvini.netlify.app/)**
-_date_: `r format(Sys.Date(), "%d %B, %Y")`
+_date_: Last update: `r format(Sys.Date(), "%d %B, %Y")`
 
 
 <br> 
 
  
-This **REST API** provides a way for platform/language independent access to the public [Immobiliare.it](https://www.immobiliare.it/) database of Real Estate rental market. By default it provides to the scraping functions the corresponding Milan url connected to its Real Estate market, it will be possible for sure to provide only the city information in the very next future. It can be extended also for other cities by providing different urls. API are built with `Plumber`. They are containerized in a Docker container which will be hosted on AWS EC2 server. 
+This **RESTful API** provides a way to scrape the public [Immobiliare.it](https://www.immobiliare.it/) database of Real Estate rental market. Plumber does not have in-built features to handle calls to the endpoints **Asynchronously**, as a matter of fact this is handled inside the `plumber.R` MAIN function by the `foreach` package. Default options provides to the scraping functions the Real Estate market Milan url, (it will be possible for sure to provide only the city information in the very next future). It can be extended also for other cities by providing different urls. API are built with `Plumber` api framework. They are containerized with Docker. It will be hosted on AWS EC2 server/ GCP with scheduler. 
 On top of that each day a scheduler runs scraping functions and _store daily data on a DB that can be queried given credentials_ (in itinere):
+
 <br><br>
 
 
-```{r API, echo=FALSE, imgcenter = TRUE}
-knitr::include_graphics("img/dpapi.png") 
+
+minimal reprex why `foreach` handles requests faster vs `furrr` (`future` spin-off). On x axis the number of urls processed, on y axis run time:
+
+```{r furrr, echo=FALSE, imgcenter = TRUE, fig.cap="linear time big-O(n)"}
+knitr::include_graphics("img/run_timefurrr.png") 
+```
+
+```{r foreach, echo=FALSE, imgcenter = TRUE, fig.cap="log time  big-O(log(n))"}
+knitr::include_graphics("img/run_timeforeach.png") 
 ```
 
 
