@@ -1,9 +1,9 @@
 ## [ scrape.all ] ----
 ## it scrapes all the available information in the grouping section
 
-scrape.all = function(npages = 10,
-                      city  = "milano",
-                      type  = "affitto"){
+scrape = function(npages = 10,
+                  city  = "milano",
+                  type  = "affitto"){
             
             
             ## sanitize iput from user 

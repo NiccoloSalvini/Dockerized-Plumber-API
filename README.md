@@ -16,7 +16,7 @@ x
 <a href="https://www.buymeacoffee.com/gbraad" target="_blank"><img src="img/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
 *author*: **[Niccolò Salvini](https://niccolosalvini.netlify.app/)**
-*date*: Last update: 02 ottobre, 2020
+*date*: Last update: 03 ottobre, 2020
 
 <br>
 
@@ -26,11 +26,10 @@ rental market. Plumber does not have in-built features to handle calls
 to the endpoints **Asynchronously**, as a matter of fact this is handled
 inside the `plumber.R` MAIN function by the `foreach` package. Default
 options provides to the scraping functions the Real Estate market Milan
-url, (it will be possible for sure to provide only the city information
-in the very next future). It can be extended also for other cities by
-providing different urls. API are built with `Plumber` api framework.
-They are containerized with Docker. It will be hosted on AWS EC2 server/
-GCP with scheduler. On top of that each day a scheduler runs scraping
+url, nonetheless it is possible to specify the city and also the selling
+(instead of rents). API is built with the `Plumber` framework, moreover
+it is containerized with Docker. *It will be hosted on AWS EC2 server/
+GCP with scheduler. * On top of that each day a scheduler runs scraping
 functions and *store daily data on a DB that can be queried given
 credentials* (in itinere):
 
@@ -82,9 +81,9 @@ log time big-O(log(n))
 ``` r
       GET */scrape
 
-      #* @param city [chr string] the city you are interested in (e.g. "roma", "milano", "firenze")
-      #* @param npages [positive integer] number of pages to scrape (1-300) default: 10 min: 2
-      #* @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
+      @param city [chr string] the city you are interested in (e.g. "roma", "milano", "firenze"--> lowercase, without accent)
+      @param npages [positive integer] number of pages to scrape, default = 10, min  = 2, max = 300
+      @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
       content-type: application/json 
 ```
 
@@ -95,8 +94,10 @@ log time big-O(log(n))
 ``` r
       GET */link
 
-      param url [url string]  the link from which you are interested to extract data
-      param npages  [positive integer] number of pages to scrape (1-300) 
+      @param city [chr string] the city you are interested to extract data (lowercase without accent)
+      @param npages [positive integer] number of pages to scrape default = 10, min  = 2, max = 300
+      @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
+      @param .thesis [logical] data used for master thesis
       content-type: application/json 
 ```
 
@@ -108,8 +109,10 @@ log time big-O(log(n))
 ``` r
       GET */complete
 
-      param url  _url string_ url the link from which you are interested to extract data
-      param npages [positive integer] number of pages to scrape (1-300) 
+      @param city [chr string] the city you are interested to extract data (lowercase without accent)
+      @param npages [positive integer] number of pages to scrape default = 10, min  = 2, max = 300
+      @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
+      @param .thesis [logical] data used for master thesis
       content-type: application/json
             
 ```

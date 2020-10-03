@@ -71,19 +71,20 @@ logger = function(req){
 
 
 #* Get fast raw data (5 covariates: title, price, num of rooms, sqmeter, primarykey)
-#* @param city [chr string] the city you are interested in
-#* @param npages [positive integer] number of pages to scrape (1-300) default: 10 min: 2
+#* @param city [chr string] the city you are interested to extract data (lowercase without accent)
+#* @param npages [positive integer] number of pages to scrape default = 10, min  = 2, max = 300
 #* @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
 #* @get /scrape
 function(npages = 10,
          city = "milano",
          type = "affitto",
-         res){
+         req){
+            print(req$QUERY_STRING)
             if (npages > 300 || npages < 0  ){stop("npages must be numeric")}
             # if (!type %in% c("affitto", "vendita")){ stop("type has only 2 options: 'affitto' o 'vendita'")}
             # if (!identical(type,"affitto")){ stop("type has to be 'affitto")}
             list(
-                        scrape.all(npages,city,type)
+                        scrape(npages,city,type)
             )
            
 }
@@ -91,40 +92,53 @@ function(npages = 10,
 
 
 #* Get all the links  
-#* @param url [url string] the link from which you are interested to extract data default: Milan
-#* @param npages [positive integer] number of pages to scrape (1-300) default: 10 min: 2
+#* @param city [chr string] the city you are interested to extract data (lowercase without accent)
+#* @param npages [positive integer] number of pages to scrape default = 10, min  = 2, max = 300
+#* @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
 #* @get /links
-function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
-         npages = 10,
+function(npages = 10,
+         city = "milano",
+         type = "affitto",
+         .thesis = F,
          res){
-            
-            if (!is_url(url)){stop("url you inputted seems not to be a proper url")}
-            
             if (npages > 300 || npages < 0  ){stop("npages must be numeric")}
-            
-            list(
-                        links = all.links(url,npages)
-            )
-            
+            if(.thesis){
+                        list(
+                                    all.links(npages,city,type, .thesis = TRUE)
+                        )
+            } else {
+                        list(
+                                    all.links(npages,city,type)
+                                    )
+            }
 }
 
 
 #* Get the complete data from single links (not the raw)
-#* @param url [url string] the link from which you are interested to extract data default: Milan
-#* @param npages [positive integer] number of pages to scrape (1-300) default: 10 min: 2
+#* @param city [chr string] the city you are interested to extract data (lowercase without accent)
+#* @param npages [positive integer] number of pages to scrape default = 10, min  = 2, max = 300
+#* @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
 #* @get /complete
-function(url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
-         npages = 10){
-            
-            if (!is_url(url)){stop("url you inputted seems not to be a proper url")}
+function(npages = 10,
+         city = "milano",
+         type = "affitto",
+         .thesis = F,
+         res){
             
             if (npages > 300 || npages < 0  ){stop("pts must be between 1 and 300")}
-  
-            links = all.links(url,npages)
-            list(
-                        complete = scrape.all.info(links)
-                        
-            )
+            
+            if(.thesis){
+                        links = all.links(npages, city, type, .thesis = TRUE)
+                        list(
+                                    complete(links)
+                                    
+                        )
+            } else {
+                        links = all.links(npages,city,type)
+                        list(
+                                    complete(links)
+                        )
+            }
             
 }
 

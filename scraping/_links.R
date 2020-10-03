@@ -2,14 +2,26 @@
 ## it extracts all the links, which are the single house ad
 ## inside a single agglomerative url
 
-all.links= function(url  = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069",
-                    npages = 10) {
+all.links= function(npages = 10,
+                    city = "milano",
+                    type = "affitto",
+                    .thesis = FALSE) {
+            
+            ## default url corresponds to Milan rental Real Estate
+            ## compose target url
+            dom = "https://www.immobiliare.it/"
+            stringa = paste0(dom,type,"-case/",city,"/")
+            list.of.pages.imm = str_c(stringa, '?pag=', 2:npages) %>% 
+                        append(stringa, after = 0) 
+            
+            if(.thesis){
+                        url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069"
+                        list.of.pages.imm = str_c(url, '?pag=', 2:npages) %>%
+                                    append(url, after = 0)
+            }
+            
             cl = makeCluster(detectCores()-1) #using max cores - 1 for parallel processing
             registerDoParallel(cl)
-            
-            ## build the url array 
-            list.of.pages.imm = str_c(url, '&pag=', 2:npages) %>% 
-                        append(url, after = 0)
             
             listone = foreach(i = seq_along(list.of.pages.imm),
                               .packages = vec.pacchetti,
@@ -32,28 +44,11 @@ all.links= function(url  = "https://www.immobiliare.it/affitto-case/milano/?crit
                                                       'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0')
                                           
                                           
-                                          ## [ add other Headers ] ----
-                                          
-                                          
-                                          mails = c('heurtee@triderprez.cf',
-                                                    'nonliqui@famalsa.tk',
-                                                    'bemerker@vagenland.gq',
-                                                    'deutoplasm@c032bjik.buzz',
-                                                    'controllably@mirider.ga')
-                                          
+                               
                                           
                                           len = function(x){
-                                                      length(x) %>% 
-                                                                  print()
-                                          }  
-                                          
-                                          ## [ sleep fucntion to simulate request delay  ] ----
-                                          
-                                          dormi = function() {
-                                                      Sys.sleep(sample(seq(1, 2, by=0.001), 1))
+                                                      length(x) %>% print()
                                           }
-                                          
-                                          ##  end utils ----
                                           
                                           ## [ scrapehref.imm MOD] ----
                                           
@@ -70,6 +65,6 @@ all.links= function(url  = "https://www.immobiliare.it/affitto-case/milano/?crit
                                           
                                           x = scrapehref.imm(list.of.pages.imm[i]) 
                               }
-            stopCluster(cl)
+            on.exit(stopCluster(cl))
             return(listone)
 }

@@ -2,8 +2,8 @@
 ## it scrapes all the information inside a single link
 ## 
 
-scrape.all.info = function(links,
-                           npages = 10){
+complete = function(links,
+                    npages = 10){
             
             cl = makeCluster(detectCores()-1)
             registerDoParallel(cl)
