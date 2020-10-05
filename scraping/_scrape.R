@@ -3,7 +3,9 @@
 
 scrape = function(npages = 10,
                   city  = "milano",
-                  type  = "affitto"){
+                  type  = "affitto"
+                  # macrozone = c("fiera", "centro")
+                  ){
             
             
             ## sanitize iput from user 
@@ -11,10 +13,29 @@ scrape = function(npages = 10,
             # if (!type %in% c("affitto", "vendita")){ stop("type has only 2 options: 'affitto' o 'vendita'")}
             ## default url corresponds to Milan rental Real Estate
             ## compose target url
+            ## 
+            
+            tipo = tolower(type)
+            citta = tolower(city) %>% iconv(to='ASCII//TRANSLIT')
+            # macrozone = tolower(macrozone) %>% iconv(to='ASCII//TRANSLIT')
+            # zone = fromJSON(here::here("zone.json"))
+            # idzone = list()
+            # for(i in seq_along(macrozone)){
+            #             zone$name = zone$name %>%  tolower()
+            #             if(grepl(macrozone[i], zone)[2]){
+            #                         pos = grepl(macrozone[i],zone$name, ignore.case = T)
+            #                         idzone[i] = zone[pos,] %>%  select(id)
+            #             } else { 
+            #                         stop(paste0("zone:", macrozone[i], " is not recognized"))}
+            # }
+            # idzone = idzone %>%  unlist() %>%  unique()
+            # mzones =  glue::glue_collapse(x = idzone, "&idMZona[]=")
+            
             dom = "https://www.immobiliare.it/"
-            stringa = paste0(dom,type,"-case/",city,"/")
+            stringa = paste0(dom, tipo, "-case/", citta,"/") # mzones
             list.of.pages.imm = str_c(stringa, '?pag=', 2:npages) %>% 
                         append(stringa, after = 0) 
+
             
             cl = makeCluster(detectCores()-1)
             registerDoParallel(cl)
@@ -95,37 +116,27 @@ scrape = function(npages = 10,
                                          ##  START FUNCTIONS_URL ----
                                          
                                          
-                                         scrapehref.imm = function(session){
-                                                     
-                                                     web = read_html(session) %>% 
-                                                                 html_nodes(css = '.text-primary a') %>% 
-                                                                 html_attr('href') %>%
-                                                                 as.character()
-                                                     return(web)
-                                         }
-                                         
-                                         
                                          scrapeprice.imm = function(session){
                                                      
-                                                     if(get_ua(session) == "libcurl/7.64.1 r-curl/4.3 httr/1.4.1") 
-                                                                 stop("Error: You are using the default user agent you might be caught.
-         try sourcing the utils.R where agents are stored")
-                                                     
                                                      web = read_html(session) %>% 
-                                                                 html_nodes(css = '.lif__item:nth-child(1)') %>% 
+                                                                 html_nodes(css = ".lif__item:nth-child(1)") %>% 
                                                                  html_text() %>%
                                                                  str_replace_all(c("€"="","\\."="")) %>% 
-                                                                 str_extract( "\\-*\\d+\\.*\\d*") %>%  
-                                                                 str_replace_na() %>% 
-                                                                 str_replace("NA", 'Prezzo Su Richiesta')
-                                                     return(web)
+                                                                 str_extract( "\\-*\\d+\\.*\\d*") %>% 
+                                                                 replace_na(replace = 'Prezzo Su Richiesta') 
+                                                     
+                                                     if(len(web)>25){
+                                                                 web1 = read_html(session) %>% 
+                                                                             html_nodes(css = ".lif__pricing") %>% 
+                                                                             html_text() %>%
+                                                                             str_replace_all(c("€"="","\\."="")) %>% 
+                                                                             str_extract( "\\-*\\d+\\.*\\d*")
+                                                                 return(web1) 
+                                                                 
+                                                     } else {return(web)}
                                          }
                                          
                                          scrapeprimarykey.imm = function(session){
-                                                     
-                                                     if(get_ua(session) == "libcurl/7.64.1 r-curl/4.3 httr/1.4.1") 
-                                                                 stop("Error: You are using the default user agent you might be caught.
-         try sourcing the utils.R where agents are stored")
                                                      
                                                      web = read_html(session) %>% 
                                                                  html_nodes(css = '.text-primary a') %>% 
@@ -137,43 +148,49 @@ scrape = function(npages = 10,
                                          
                                          scraperooms.imm = function(session){
                                                      
-                                                     if(get_ua(session) == "libcurl/7.64.1 r-curl/4.3 httr/1.4.1") 
-                                                                 stop("Error: You are using the default user agent you might be caught.
-         try sourcing the utils.R where agents are stored")
-                                                     
                                                      web = read_html(session) %>% 
-                                                                 html_nodes(css = '.lif__item:nth-child(2) .text-bold') %>% 
+                                                                 html_nodes(css = '#listing-container .list-piped') %>% 
                                                                  html_text() %>% 
-                                                                 str_trim() %>% 
-                                                                 as.numeric()
+                                                                 str_replace_all('\n','') %>% 
+                                                                 str_squish() 
                                                      
-                                                     return(web)
+                                                     nroom = c()
+                                                     for(i in seq_along(web)){
+                                                                 if(grepl("locali", web[i])){
+                                                                             l =str_split(web[i], " ") %>%  pluck(1)
+                                                                             pos = match("locali", l)
+                                                                             nroom[i] = l[pos-1]
+                                                                 } else {
+                                                                             
+                                                                             nroom[i] = "Not Found"
+                                                                 }
+                                                     }
+                                                     return(nroom)
                                          }
                                          
                                          scrapespace.imm = function(session){
                                                      
-                                                     if(get_ua(session) == "libcurl/7.64.1 r-curl/4.3 httr/1.4.1") 
-                                                                 stop("Error: You are using the default user agent you might be caught.
-         try sourcing the utils.R where agents are stored")
-                                                     
                                                      web = read_html(session) %>% 
-                                                                 html_nodes(css = '.lif__item:nth-child(3) .text-bold') %>% 
+                                                                 html_nodes(css = '#listing-container .list-piped') %>% 
                                                                  html_text() %>% 
-                                                                 as.numeric() 
-                                                     return(web)
+                                                                 str_replace_all('\n','') %>% 
+                                                                 str_squish() 
+                                                     
+                                                     sqmeter = c()
+                                                     for(i in seq_along(web)){
+                                                                 if(grepl("m2superficie1", web[i])){
+                                                                             l =str_split(web[i], " ") %>%  pluck(1)
+                                                                             pos = match("m2superficie1", l)
+                                                                             sqmeter[i] = l[pos-1]
+                                                                 } else {
+                                                                             
+                                                                             sqmeter[i] = "Not Found"
+                                                                 }
+                                                     }
+                                                     return(sqmeter)
                                          }
                                          
                                          scrapetitle.imm = function(session){
-                                                     
-                                                     if(get_ua(session) == "libcurl/7.64.1 r-curl/4.3 httr/1.4.1") 
-                                                                 stop("Error: You are using the default user agent you might be caught.
-         try sourcing the utils.R where agents are stored")
-                                                     
-                                                     if(is_url(session)[1]) 
-                                                                 stop("Error: you are entering a URL instead of a SESSION object,
-         try with the .$response workaround")
-                                                     
-                                                     
                                                      
                                                      web = read_html(session) %>% 
                                                                  html_nodes(css = '.text-primary a') %>% 

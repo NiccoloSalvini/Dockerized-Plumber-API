@@ -16,7 +16,7 @@ x
 <a href="https://www.buymeacoffee.com/gbraad" target="_blank"><img src="img/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
 *author*: **[Niccolò Salvini](https://niccolosalvini.netlify.app/)**
-*date*: Last update: 03 ottobre, 2020
+*date*: Last update: 05 ottobre, 2020
 
 <br>
 
@@ -25,13 +25,17 @@ This **RESTful API** provides a way to scrape the public
 rental market. Plumber does not have in-built features to handle calls
 to the endpoints **Asynchronously**, as a matter of fact this is handled
 inside the `plumber.R` MAIN function by the `foreach` package. Default
-options provides to the scraping functions the Real Estate market Milan
-url, nonetheless it is possible to specify the city and also the selling
-(instead of rents). API is built with the `Plumber` framework, moreover
-it is containerized with Docker. *It will be hosted on AWS EC2 server/
-GCP with scheduler. * On top of that each day a scheduler runs scraping
-functions and *store daily data on a DB that can be queried given
-credentials* (in itinere):
+options provides the Real Estate rental Milan zone, nonetheless it is
+possible to specify the city, the number of webpages of interest and
+also selling (instead of rental market). *A further recent improvement
+lets you specify the macrozone as filters directly in the api (in
+itinere)* . For the time being is possible to filter out through
+immobiliare the macrozone and the provide the API the url.
+
+API is built with the `Plumber` framework, moreover it is containerized
+with Docker. *It will be hosted on AWS EC2 server/ GCP with scheduler. *
+On top of that each day a scheduler runs scraping functions and *store
+daily data on a DB that can be queried given credentials* (in itinere):
 
 <br><br>
 
@@ -83,7 +87,7 @@ log time big-O(log(n))
 
       @param city [chr string] the city you are interested in (e.g. "roma", "milano", "firenze"--> lowercase, without accent)
       @param npages [positive integer] number of pages to scrape, default = 10, min  = 2, max = 300
-      @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
+      @param type [chr string] "affitto" = rents, "vendita"  = sell 
       content-type: application/json 
 ```
 
@@ -96,7 +100,7 @@ log time big-O(log(n))
 
       @param city [chr string] the city you are interested to extract data (lowercase without accent)
       @param npages [positive integer] number of pages to scrape default = 10, min  = 2, max = 300
-      @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
+      @param type [chr string] "affitto" = rents, "vendita"  = sell 
       @param .thesis [logical] data used for master thesis
       content-type: application/json 
 ```
@@ -111,7 +115,7 @@ log time big-O(log(n))
 
       @param city [chr string] the city you are interested to extract data (lowercase without accent)
       @param npages [positive integer] number of pages to scrape default = 10, min  = 2, max = 300
-      @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
+      @param type [chr string] "affitto" = rents, "vendita"  = sell 
       @param .thesis [logical] data used for master thesis
       content-type: application/json
             

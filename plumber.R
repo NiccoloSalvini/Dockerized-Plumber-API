@@ -20,7 +20,8 @@ vec.pacchetti = c("dplyr",
                   "jsonlite",
                   "doParallel",
                   "stringr",
-                  "here")
+                  "here",
+                  "purrr")
 
 invisible(lapply(vec.pacchetti, library, character.only = TRUE))
 
@@ -42,6 +43,56 @@ is_url = function(url){
             grepl(re, url)
 }
 
+
+get_link = function(city = "milano",
+                    type = "affitto",
+                    npages = 10,
+                    .url,
+                    .macrozone= c("fiera", "centro"),
+                    .list = FALSE) {
+            tipo = tolower(type)
+            citta = tolower(city) %>% iconv(to='ASCII//TRANSLIT')
+            macrozone = tolower(.macrozone) %>% iconv(to='ASCII//TRANSLIT')
+            
+            if(!tipo %in% c("affitto", "vendita")){stop("Affitto has to be specified")}
+            # if(!identical(tipo, "affitto")){stop("Affitto has to be specified")}
+            
+            if(!identical(macrozone, c("fiera", "centro"))){
+                        idzone = list()
+                        for(i in seq_along(macrozone)){
+                                    zone = fromJSON("zone.json")
+                                    zone$name = zone$name %>%  tolower()
+                                    if(grepl(macrozone[i], zone)[2]){
+                                                pos = grepl(macrozone[i],zone$name, ignore.case = T)
+                                                idzone[i] = zone[pos,] %>%  select(id)
+                                    } else { 
+                                                stop(paste0("zone:", macrozone[i], " is not recognized"))
+                                                }
+                        }
+                        idzone = idzone %>%  unlist() %>%  unique()
+                        mzones =  glue::glue_collapse(x = idzone, "&idMZona[]=") %>% 
+                                    paste0("?idMZona[]=",.)
+                        
+                        dom = "https://www.immobiliare.it/"
+                        stringa = paste0(dom,tipo,"-case/",citta,"/",mzones)
+                        lista = c()
+                        url = list(stringa = stringa, lista = lista)
+            }
+            dom = "https://www.immobiliare.it/"
+            stringa = paste0(dom,tipo,"-case/",citta,"/")
+            lista = c()
+            url = list(stringa = stringa, lista = lista)
+            if(.list == T){
+                        vecurls = str_c(stringa, '?pag=', 2:npages) %>% 
+                                    append(stringa, after = 0)
+                        url$lista = vecurls
+                        return(url)
+            } else {
+                        return(url)
+                        }
+}
+
+
 source(here::here("scraping/_scrape.R"))
 source(here::here("scraping/_links.R"))
 source(here::here("scraping/_complete.R"))
@@ -59,7 +110,6 @@ source(here::here("scraping/_complete.R"))
 #* Print to log
 #* @filter logger
 logger = function(req){
-            
             cat("\n", as.character(Sys.time()), 
                 "\n", req$REQUEST_METHOD, req$PATH_INFO, 
                 "\n", req$HTTP_USER_AGENT, "@", req$REMOTE_ADDR)
@@ -77,14 +127,16 @@ logger = function(req){
 #* @get /scrape
 function(npages = 10,
          city = "milano",
+         # macrozone = c("fiera","centro"),
          type = "affitto",
          req){
             print(req$QUERY_STRING)
             if (npages > 300 || npages < 0  ){stop("npages must be numeric")}
+            
             # if (!type %in% c("affitto", "vendita")){ stop("type has only 2 options: 'affitto' o 'vendita'")}
             # if (!identical(type,"affitto")){ stop("type has to be 'affitto")}
             list(
-                        scrape(npages,city,type)
+                        scrape(npages, city, type) # macrozone #url
             )
            
 }
@@ -99,16 +151,17 @@ function(npages = 10,
 function(npages = 10,
          city = "milano",
          type = "affitto",
+         # url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&idMZona[]=10046&idMZona[]=10047&idMZona[]=10071&idMZona[]=10067&idMZona[]=10066",
          .thesis = F,
-         res){
+         req){
             if (npages > 300 || npages < 0  ){stop("npages must be numeric")}
             if(.thesis){
                         list(
-                                    all.links(npages,city,type, .thesis = TRUE)
+                                    all.links(npages,city,type, .thesis = TRUE) # url
                         )
             } else {
                         list(
-                                    all.links(npages,city,type)
+                                    all.links(npages,city,type) # url
                                     )
             }
 }
@@ -123,7 +176,7 @@ function(npages = 10,
          city = "milano",
          type = "affitto",
          .thesis = F,
-         res){
+         req){
             
             if (npages > 300 || npages < 0  ){stop("pts must be between 1 and 300")}
             
