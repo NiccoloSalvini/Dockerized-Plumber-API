@@ -52,6 +52,11 @@ This **RESTful API** provides a way to scrape the public [Immobiliare.it](https:
 API is built with the `Plumber` framework, moreover it is containerized with Docker. _It will be hosted on AWS EC2 server/ GCP with scheduler. _
 On top of that each day a scheduler runs scraping functions and _store daily data on a DB that can be queried given credentials_ (in itinere):
 
+```{r infra, echo=FALSE, imgcenter = TRUE, fig.cap="infra"}
+knitr::include_graphics("img/combined.jpg") 
+```
+
+
 <br><br>
 
 

@@ -37,6 +37,22 @@ with Docker. *It will be hosted on AWS EC2 server/ GCP with scheduler. *
 On top of that each day a scheduler runs scraping functions and *store
 daily data on a DB that can be queried given credentials* (in itinere):
 
+<p align="center">
+
+<div class="figure">
+
+<img src="img/combined.jpg" alt="infra" width="3742" />
+
+<p class="caption">
+
+infra
+
+</p>
+
+</div>
+
+</p>
+
 <br><br>
 
 minimal reprex why `foreach` handles requests faster vs `furrr`

@@ -2,6 +2,20 @@
 ## it extracts all the links, which are the single house ad
 ## inside a single agglomerative url
 
+vec.pacchetti = c("dplyr",
+                  "tibble",
+                  "magrittr",
+                  "rvest",
+                  "tidyr",
+                  "httr",
+                  "stringi",
+                  "lubridate",
+                  "jsonlite",
+                  "doParallel",
+                  "stringr",
+                  "here",
+                  "purrr")
+
 all.links= function(npages = 10,
                     city = "milano",
                     type = "affitto",

@@ -1,6 +1,20 @@
 ## [ scrape.all ] ----
 ## it scrapes all the available information in the grouping section
 
+vec.pacchetti = c("dplyr",
+                  "tibble",
+                  "magrittr",
+                  "rvest",
+                  "tidyr",
+                  "httr",
+                  "stringi",
+                  "lubridate",
+                  "jsonlite",
+                  "doParallel",
+                  "stringr",
+                  "here",
+                  "purrr")
+
 scrape = function(npages = 10,
                   city  = "milano",
                   type  = "affitto"

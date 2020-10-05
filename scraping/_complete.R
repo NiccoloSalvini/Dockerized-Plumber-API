@@ -2,6 +2,20 @@
 ## it scrapes all the information inside a single link
 ## 
 
+vec.pacchetti = c("dplyr",
+                  "tibble",
+                  "magrittr",
+                  "rvest",
+                  "tidyr",
+                  "httr",
+                  "stringi",
+                  "lubridate",
+                  "jsonlite",
+                  "doParallel",
+                  "stringr",
+                  "here",
+                  "purrr")
+
 complete = function(links,
                     npages = 10){
             
