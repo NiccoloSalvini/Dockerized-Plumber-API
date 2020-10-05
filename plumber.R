@@ -130,11 +130,9 @@ function(npages = 10,
          # macrozone = c("fiera","centro"),
          type = "affitto",
          req){
-            print(req$QUERY_STRING)
+            cat("\n\n port:" ,req$SERVER_PORT,
+                "\n server_name:",req$SERVER_NAME)
             if (npages > 300 || npages < 0  ){stop("npages must be numeric")}
-            
-            # if (!type %in% c("affitto", "vendita")){ stop("type has only 2 options: 'affitto' o 'vendita'")}
-            # if (!identical(type,"affitto")){ stop("type has to be 'affitto")}
             list(
                         scrape(npages, city, type) # macrozone #url
             )
@@ -154,6 +152,8 @@ function(npages = 10,
          # url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&idMZona[]=10046&idMZona[]=10047&idMZona[]=10071&idMZona[]=10067&idMZona[]=10066",
          .thesis = F,
          req){
+            cat("\n\n port:" ,req$SERVER_PORT,
+                "\n server_name:",req$SERVER_NAME)
             if (npages > 300 || npages < 0  ){stop("npages must be numeric")}
             if(.thesis){
                         list(

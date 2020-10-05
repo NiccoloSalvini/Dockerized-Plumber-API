@@ -5,7 +5,6 @@
 all.links= function(npages = 10,
                     city = "milano",
                     type = "affitto",
-                    url,
                     .thesis = FALSE) {
             
             ## default url corresponds to Milan rental Real Estate
@@ -18,10 +17,6 @@ all.links= function(npages = 10,
             if(.thesis){
                         url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069"
                         list.of.pages.imm = str_c(url, '?pag=', 2:npages) %>%
-                                    append(url, after = 0)
-            }
-            if(!identical(url,"https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069")){
-                        list.of.pages.imm = str_c(url, '?pag=', 2:npages) %>% 
                                     append(url, after = 0)
             }
             cl = makeCluster(detectCores()-1) #using max cores - 1 for parallel processing
