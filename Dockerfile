@@ -12,7 +12,7 @@ RUN R -e "install.packages(c('magrittr','lubridate', 'plumber', 'rvest', 'string
 # install 'iterators' dep for DoParallel
 RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/iterators/iterators_1.0.10.tar.gz', repos=NULL, type='source')"
 
-# install 'foreach' dep for DoParalle
+# install 'foreach' dep for DoParallel
 RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/foreach/foreach_1.4.8.tar.gz', repos=NULL, type='source')"
 
 # install DoParallel from source since not avail in 4.0.2
