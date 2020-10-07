@@ -124,7 +124,7 @@ logger = function(req){
 #* @param city [chr string] the city you are interested to extract data (lowercase without accent)
 #* @param npages [positive integer] number of pages to scrape default = 10, min  = 2, max = 300
 #* @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
-#* @get /scrape
+#* @get /scrape/<npages:int>/<city:chr>
 function(npages = 10,
          city = "milano",
          # macrozone = c("fiera","centro"),
@@ -132,7 +132,9 @@ function(npages = 10,
          req){
             cat("\n\n port:" ,req$SERVER_PORT,
                 "\n server_name:",req$SERVER_NAME)
-            if (npages > 300 || npages < 0  ){stop("npages must be numeric")}
+            if (npages > 300 & npages > 0){
+                        stop("npages must be between 1 and 1,000")
+            }
             list(
                         scrape(npages, city, type) # macrozone #url
             )
@@ -145,7 +147,7 @@ function(npages = 10,
 #* @param city [chr string] the city you are interested to extract data (lowercase without accent)
 #* @param npages [positive integer] number of pages to scrape default = 10, min  = 2, max = 300
 #* @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
-#* @get /links
+#* @get /links/<npages:int>/<city:chr>/<type:chr>/<.thesis:bool>
 function(npages = 10,
          city = "milano",
          type = "affitto",
@@ -153,8 +155,10 @@ function(npages = 10,
          .thesis = F,
          req){
             cat("\n\n port:" ,req$SERVER_PORT,
-                "\n server_name:",req$SERVER_NAME)
-            if (npages > 300 || npages < 0  ){stop("npages must be numeric")}
+                "\n server_name:",req$SERVER_NAME, "\n\n")
+            if (npages > 300 & npages > 0){
+                        stop("npages must be between 1 and 1,000")
+            }
             if(.thesis){
                         list(
                                     all.links(npages,city,type, .thesis = TRUE) # url
@@ -171,14 +175,16 @@ function(npages = 10,
 #* @param city [chr string] the city you are interested to extract data (lowercase without accent)
 #* @param npages [positive integer] number of pages to scrape default = 10, min  = 2, max = 300
 #* @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
-#* @get /complete
+#* @get /complete/<npages:int>/<city:chr>/<type:chr>/<.thesis:bool>
 function(npages = 10,
          city = "milano",
          type = "affitto",
          .thesis = F,
          req){
             
-            if (npages > 300 || npages < 0  ){stop("pts must be between 1 and 300")}
+            if (npages > 300 & npages > 0){
+                        stop("npages must be between 1 and 1,000")
+            }
             
             if(.thesis){
                         links = all.links(npages, city, type, .thesis = TRUE)
