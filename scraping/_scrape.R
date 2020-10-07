@@ -13,7 +13,8 @@ vec.pacchetti = c("dplyr",
                   "doParallel",
                   "stringr",
                   "here",
-                  "purrr")
+                  "purrr",
+                  "mongolite")
 
 scrape = function(npages = 10,
                   city  = "milano",

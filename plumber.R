@@ -21,7 +21,8 @@ vec.pacchetti = c("dplyr",
                   "doParallel",
                   "stringr",
                   "here",
-                  "purrr")
+                  "purrr",
+                  "mongolite")
 
 invisible(lapply(vec.pacchetti, library, character.only = TRUE))
 
@@ -97,7 +98,8 @@ source(here::here("scraping/_scrape.R"))
 source(here::here("scraping/_links.R"))
 source(here::here("scraping/_complete.R"))
 
-
+## .csv generator
+source(here::here("get_data.R"))
 
 ## 3.0 REST API ENDPOINT  ----
 # define APIs
@@ -199,6 +201,27 @@ function(npages = 10,
                         )
             }
             
+}
+
+
+#* Store data.csv in shared directory
+#* @param city [chr string] the city you are interested to extract data (lowercase without accent)
+#* @param npages [positive integer] number of pages to scrape default = 10, min  = 2, max = 300
+#* @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
+#* @get /get_data/<npages:int>/<city:chr>/<type:chr>
+function(npages = 10,
+         city = "milano",
+         type = "affitto",
+         req){
+            cat("\n\n port:" ,req$SERVER_PORT,
+                "\n server_name:",req$SERVER_NAME)
+            if (npages > 300 & npages > 0){
+                        stop("npages must be between 1 and 1,000")
+            }
+            
+            list(
+                        get_data(npages, city, type)
+            )
 }
 
 

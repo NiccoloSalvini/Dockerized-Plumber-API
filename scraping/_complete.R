@@ -14,7 +14,8 @@ vec.pacchetti = c("dplyr",
                   "doParallel",
                   "stringr",
                   "here",
-                  "purrr")
+                  "purrr",
+                  "mongolite)
 
 complete = function(links,
                     npages = 10){
