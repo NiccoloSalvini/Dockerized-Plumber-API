@@ -15,7 +15,7 @@ vec.pacchetti = c("dplyr",
                   "stringr",
                   "here",
                   "purrr",
-                  "mongolite)
+                  "mongolite")
 
 complete = function(links,
                     npages = 10){
