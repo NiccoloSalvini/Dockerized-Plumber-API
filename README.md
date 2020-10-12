@@ -1,12 +1,11 @@
-Asynchronous API Scraping [Immobiliare.it](https://www.immobiliare.it/)
+Asynchronous HTTP API Scraping
+[Immobiliare.it](https://www.immobiliare.it/)
 ================
 
   - [API Infrastructure](#api-infrastructure)
-  - [API Documentation:](#api-documentation)
+  - [API Docs:](#api-docs)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
-x
 
 <img src="img/logo.png" align="right" height="80" />
 
@@ -16,32 +15,35 @@ x
 <a href="https://www.buymeacoffee.com/gbraad" target="_blank"><img src="img/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
 *author*: **[Niccolò Salvini](https://niccolosalvini.netlify.app/)**
-*date*: Last update: 05 ottobre, 2020
+*date*: Last update: 11 ottobre, 2020
 
 <br>
 
-This **RESTful API** provides a way to scrape the public
+This **HTTP API** provides a way to scrape the public
 [Immobiliare.it](https://www.immobiliare.it/) database of Real Estate
 rental market. Plumber does not have in-built features to handle calls
 to the endpoints **Asynchronously**, as a matter of fact this is handled
-inside the `plumber.R` MAIN function by the `foreach` package. Default
-options provides the Real Estate rental Milan zone, nonetheless it is
+inside the `plumber.R` API body by the `foreach` package. Default
+@params provides the Real Estate rental Milan zone, nonetheless it is
 possible to specify the city, the number of webpages of interest and
-also selling (instead of rental market). *A further recent improvement
-lets you specify the macrozone as filters directly in the api (in
-itinere)* . For the time being is possible to filter out through
-immobiliare the macrozone and the provide the API the url.
+also the type as selling or rental market. get\_data.R sources an API
+endpoint function to extract data from a predefined url (i.e. Milan
+rental real estate). Data is then sent to a Mongo ATLAS db. future
+improvements:
 
-API is built with the `Plumber` framework, moreover it is containerized
-with Docker. *It will be hosted on AWS EC2 server/ GCP with scheduler. *
-On top of that each day a scheduler runs scraping functions and *store
-daily data on a DB that can be queried given credentials* (in itinere):
+  - specification of the Macrozone and Microzone
+  - NGINX reverse proxy
+  - Docker compose with a scheduler running behind
+  - AWS EC2 server
+
+API is built with `Plumber`, further documentation can be found
+[here](https://www.rplumber.io/index.html)
 
 <p align="center">
 
 <div class="figure">
 
-<img src="img/combined.jpg" alt="infra" width="3742" />
+<img src="img/completeinfra.PNG" alt="infra" width="946" />
 
 <p class="caption">
 
@@ -91,7 +93,7 @@ log time big-O(log(n))
 
 </p>
 
-## API Documentation:
+## API Docs:
 
   - Get FAST data, it covers 5 covariates: title, price, num of rooms,
     sqmeter, primarykey
