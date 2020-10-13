@@ -35,7 +35,7 @@ scrape = function(npages = 10,
             if(!missing("macrozone")){
                         macrozone = tolower(macrozone) %>% iconv(to='ASCII//TRANSLIT') %>%  str_trim()
                         idzone = list()
-                        zone = fromJSON(here::here("zone.json"))
+                        zone = fromJSON(here::here("ALLzone.json"))
                         for(i in seq_along(macrozone)){
                                     zone$name = zone$name %>%  tolower()
                                     if(grepl(macrozone[i], zone)[2]){
