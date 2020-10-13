@@ -35,6 +35,9 @@ print("scraping dir exists:")
 print(dir.exists("scraping/"))
 
 
+
+type_choices = c("affitto", "vendita")
+
 ## 2.0 MAIN FUNCTIONS ----
 
 ## some useful handlers
@@ -98,7 +101,7 @@ source(here::here("scraping/_scrape.R"))
 source(here::here("scraping/_links.R"))
 source(here::here("scraping/_complete.R"))
 
-## .csv generator
+## .csv generator --> connected with MongoDB ATLAS          
 source(here::here("get_data.R"))
 
 ## 3.0 REST API ENDPOINT  ----
@@ -106,7 +109,7 @@ source(here::here("get_data.R"))
 
 #* @apiTitle immobiliare.it data
 #* @apiDescription GET extensive data from immobiliare.it Real Estate Rental
-#* @apiVersion 0.0.3
+#* @apiVersion 0.0.4
 #* @apiLicense list(name = "Apache 2.0", url = "https://www.apache.org/licenses/LICENSE-2.0.html")
 
 
@@ -129,7 +132,7 @@ logger = function(req){
 #* @param city [chr string] the city you are interested to extract data (lowercase without accent)
 #* @param npages [positive integer] number of pages to scrape default = 10, min  = 2, max = 300
 #* @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
-#* @get /scrape/<npages:int>/<city:chr>/<macrozone:chr>
+#* @get /scrape/<npages:int>/<city:chr>/<type:chr>
 function(npages = 10,
          city = "milano",
          macrozone = c("fiera", "centro"),
@@ -145,10 +148,17 @@ function(npages = 10,
                         stop(list(error=jsonlite::unbox(msg)))
                         
             }
+            # 
+            # if(!type %in% type_choices){
+            #             msg = "type is not either 'affito' or 'vendita'"
+            #             res$status = 500 # Bad request
+            #             stop(list(error=jsonlite::unbox(msg)))
+            #             
+            # }
             
             if(missing(macrozone)){
                         list(
-                                    scrape(npages, city, type) # macrozone #url
+                                    scrape(npages, city, type) 
                         )       
                         
             } else {

@@ -19,8 +19,7 @@ vec.pacchetti = c("dplyr",
 scrape = function(npages = 10,
                   city  = "milano",
                   type  = "affitto",
-                  macrozone = c("fiera", "centro")
-                  ){
+                  macrozone){
             
             
             ## sanitize iput from user 
