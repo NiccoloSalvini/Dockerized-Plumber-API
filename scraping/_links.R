@@ -14,25 +14,34 @@ vec.pacchetti = c("dplyr",
                   "doParallel",
                   "stringr",
                   "here",
-                  "purrr")
+                  "purrr",
+                  "mongolite")
 
 all.links= function(npages = 10,
                     city = "milano",
                     type = "affitto",
+                    macrozone = c("fiera", "centro"),
                     .thesis = FALSE) {
+            
+            tipo = tolower(type) %>% str_trim()
+            citta = tolower(city) %>% iconv(to='ASCII//TRANSLIT') %>%  str_trim()
             
             ## default url corresponds to Milan rental Real Estate
             ## compose target url
             dom = "https://www.immobiliare.it/"
             stringa = paste0(dom,type,"-case/",city,"/")
             list.of.pages.imm = str_c(stringa, '?pag=', 2:npages) %>% 
-                        append(stringa, after = 0) 
+                        append(stringa, after = 0)
+            cat(list.of.pages.imm[2])
+            
             
             if(.thesis){
                         url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069"
                         list.of.pages.imm = str_c(url, '?pag=', 2:npages) %>%
                                     append(url, after = 0)
+                        cat(list.of.pages.imm[2])
             }
+            
             cl = makeCluster(detectCores()-1) #using max cores - 1 for parallel processing
             registerDoParallel(cl)
             

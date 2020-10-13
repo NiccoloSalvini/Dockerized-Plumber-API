@@ -18,8 +18,8 @@ vec.pacchetti = c("dplyr",
 
 scrape = function(npages = 10,
                   city  = "milano",
-                  type  = "affitto"
-                  # macrozone = c("fiera", "centro")
+                  type  = "affitto",
+                  macrozone = c("fiera", "centro")
                   ){
             
             
@@ -30,26 +30,38 @@ scrape = function(npages = 10,
             ## compose target url
             ## 
             
-            tipo = tolower(type)
-            citta = tolower(city) %>% iconv(to='ASCII//TRANSLIT')
-            # macrozone = tolower(macrozone) %>% iconv(to='ASCII//TRANSLIT')
-            # zone = fromJSON(here::here("zone.json"))
-            # idzone = list()
-            # for(i in seq_along(macrozone)){
-            #             zone$name = zone$name %>%  tolower()
-            #             if(grepl(macrozone[i], zone)[2]){
-            #                         pos = grepl(macrozone[i],zone$name, ignore.case = T)
-            #                         idzone[i] = zone[pos,] %>%  select(id)
-            #             } else { 
-            #                         stop(paste0("zone:", macrozone[i], " is not recognized"))}
-            # }
-            # idzone = idzone %>%  unlist() %>%  unique()
-            # mzones =  glue::glue_collapse(x = idzone, "&idMZona[]=")
+            tipo = tolower(type) %>% str_trim()
+            citta = tolower(city) %>% iconv(to='ASCII//TRANSLIT') %>%  str_trim()
             
-            dom = "https://www.immobiliare.it/"
-            stringa = paste0(dom, tipo, "-case/", citta,"/") # mzones
-            list.of.pages.imm = str_c(stringa, '?pag=', 2:npages) %>% 
-                        append(stringa, after = 0) 
+            if(!missing("macrozone")){
+                        macrozone = tolower(macrozone) %>% iconv(to='ASCII//TRANSLIT') %>%  str_trim()
+                        idzone = list()
+                        zone = fromJSON(here::here("zone.json"))
+                        for(i in seq_along(macrozone)){
+                                    zone$name = zone$name %>%  tolower()
+                                    if(grepl(macrozone[i], zone)[2]){
+                                                pos = grepl(macrozone[i],zone$name, ignore.case = T)
+                                                idzone[i] = zone[pos,] %>%  select(id)
+                                    } else {
+                                                stop(paste0("zone:", macrozone[i], " is not recognized"))}
+                        }
+                        idzone = idzone %>%  unlist() %>%  unique()
+                        mzones =  glue::glue_collapse(x = idzone, "&idMZona[]=")
+                        
+                        dom = "https://www.immobiliare.it/"
+                        stringa = paste0(dom, tipo, "-case/", citta,"/?", mzones) # mzones
+                        list.of.pages.imm = str_c(stringa, '&pag=', 2:npages) %>% 
+                                    append(stringa, after = 0) 
+                        
+            } else {
+                        dom = "https://www.immobiliare.it/"
+                        stringa = paste0(dom, tipo, "-case/", citta,"/") # mzones
+                        list.of.pages.imm = str_c(stringa, '?pag=', 2:npages) %>%
+                                    append(stringa, after = 0)  
+                        
+            }
+            
+            cat(list.of.pages.imm[2],"\n") 
 
             
             cl = makeCluster(detectCores()-1)

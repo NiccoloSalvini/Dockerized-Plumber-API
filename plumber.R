@@ -49,7 +49,7 @@ get_link = function(city = "milano",
                     type = "affitto",
                     npages = 10,
                     .url,
-                    .macrozone= c("fiera", "centro"),
+                    # .macrozone= c("fiera", "centro"),
                     .list = FALSE) {
             tipo = tolower(type)
             citta = tolower(city) %>% iconv(to='ASCII//TRANSLIT')
@@ -58,27 +58,27 @@ get_link = function(city = "milano",
             if(!tipo %in% c("affitto", "vendita")){stop("Affitto has to be specified")}
             # if(!identical(tipo, "affitto")){stop("Affitto has to be specified")}
             
-            if(!identical(macrozone, c("fiera", "centro"))){
-                        idzone = list()
-                        for(i in seq_along(macrozone)){
-                                    zone = fromJSON("zone.json")
-                                    zone$name = zone$name %>%  tolower()
-                                    if(grepl(macrozone[i], zone)[2]){
-                                                pos = grepl(macrozone[i],zone$name, ignore.case = T)
-                                                idzone[i] = zone[pos,] %>%  select(id)
-                                    } else { 
-                                                stop(paste0("zone:", macrozone[i], " is not recognized"))
-                                                }
-                        }
-                        idzone = idzone %>%  unlist() %>%  unique()
-                        mzones =  glue::glue_collapse(x = idzone, "&idMZona[]=") %>% 
-                                    paste0("?idMZona[]=",.)
-                        
-                        dom = "https://www.immobiliare.it/"
-                        stringa = paste0(dom,tipo,"-case/",citta,"/",mzones)
-                        lista = c()
-                        url = list(stringa = stringa, lista = lista)
-            }
+            # if(!identical(macrozone, c("fiera", "centro"))){
+            #             idzone = list()
+            #             for(i in seq_along(macrozone)){
+            #                         zone = fromJSON("zone.json")
+            #                         zone$name = zone$name %>%  tolower()
+            #                         if(grepl(macrozone[i], zone)[2]){
+            #                                     pos = grepl(macrozone[i],zone$name, ignore.case = T)
+            #                                     idzone[i] = zone[pos,] %>%  select(id)
+            #                         } else { 
+            #                                     stop(paste0("zone:", macrozone[i], " is not recognized"))
+            #                                     }
+            #             }
+            #             idzone = idzone %>%  unlist() %>%  unique()
+            #             mzones =  glue::glue_collapse(x = idzone, "&idMZona[]=") %>% 
+            #                         paste0("?idMZona[]=",.)
+            #             
+            #             dom = "https://www.immobiliare.it/"
+            #             stringa = paste0(dom,tipo,"-case/",citta,"/",mzones)
+            #             lista = c()
+            #             url = list(stringa = stringa, lista = lista)
+            # }
             dom = "https://www.immobiliare.it/"
             stringa = paste0(dom,tipo,"-case/",citta,"/")
             lista = c()
@@ -106,7 +106,8 @@ source(here::here("get_data.R"))
 
 #* @apiTitle immobiliare.it data
 #* @apiDescription GET extensive data from immobiliare.it Real Estate Rental
-#* @apiVersion 0.0.1
+#* @apiVersion 0.0.3
+#* @apiLicense list(name = "Apache 2.0", url = "https://www.apache.org/licenses/LICENSE-2.0.html")
 
 
 #* Print to log
@@ -122,27 +123,43 @@ logger = function(req){
 }
 
 
+
+
 #* Get fast raw data (5 covariates: title, price, num of rooms, sqmeter, primarykey)
 #* @param city [chr string] the city you are interested to extract data (lowercase without accent)
 #* @param npages [positive integer] number of pages to scrape default = 10, min  = 2, max = 300
 #* @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
-#* @get /scrape/<npages:int>/<city:chr>
+#* @get /scrape/<npages:int>/<city:chr>/<macrozone:chr>
 function(npages = 10,
          city = "milano",
-         # macrozone = c("fiera","centro"),
+         macrozone = c("fiera", "centro"),
          type = "affitto",
-         req){
+         req,
+         res){
             cat("\n\n port:" ,req$SERVER_PORT,
-                "\n server_name:",req$SERVER_NAME)
+                "\n server_name:",req$SERVER_NAME,"\n")
+            
             if (npages > 300 & npages > 0){
-                        stop("npages must be between 1 and 1,000")
+                        msg = "npages has to stay between 1 and 300"
+                        res$status = 500 # Bad request
+                        stop(list(error=jsonlite::unbox(msg)))
+                        
             }
-            list(
-                        scrape(npages, city, type) # macrozone #url
-            )
+            
+            if(missing(macrozone)){
+                        list(
+                                    scrape(npages, city, type) # macrozone #url
+                        )       
+                        
+            } else {
+                        
+                        list(
+                                    scrape(npages, city, type, macrozone) # macrozone #url
+                        )      
+                        
+            }
            
 }
-
 
 
 #* Get all the links  
@@ -153,23 +170,27 @@ function(npages = 10,
 function(npages = 10,
          city = "milano",
          type = "affitto",
-         # url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&idMZona[]=10046&idMZona[]=10047&idMZona[]=10071&idMZona[]=10067&idMZona[]=10066",
          .thesis = F,
-         req){
+         req,
+         res){
             cat("\n\n port:" ,req$SERVER_PORT,
                 "\n server_name:",req$SERVER_NAME, "\n\n")
             if (npages > 300 & npages > 0){
-                        stop("npages must be between 1 and 1,000")
+                        msg = "npages has to stay between 1 and 300"
+                        res$status = 500 # Bad request
+                        stop(list(error=jsonlite::unbox(msg)))
             }
             if(.thesis){
                         list(
                                     all.links(npages,city,type, .thesis = TRUE) # url
                         )
             } else {
+                        
                         list(
-                                    all.links(npages,city,type) # url
-                                    )
+                                    all.links(npages, city, type) # macrozone #url
+                        )
             }
+            
 }
 
 
@@ -182,10 +203,13 @@ function(npages = 10,
          city = "milano",
          type = "affitto",
          .thesis = F,
-         req){
+         req,
+         res){
             
             if (npages > 300 & npages > 0){
-                        stop("npages must be between 1 and 1,000")
+                        msg = "npages has to stay between 1 and 300"
+                        res$status = 500 # Bad request
+                        stop(list(error=jsonlite::unbox(msg)))
             }
             
             if(.thesis){
@@ -212,11 +236,14 @@ function(npages = 10,
 function(npages = 10,
          city = "milano",
          type = "affitto",
-         req){
+         req,
+         res){
             cat("\n\n port:" ,req$SERVER_PORT,
                 "\n server_name:",req$SERVER_NAME)
             if (npages > 300 & npages > 0){
-                        stop("npages must be between 1 and 1,000")
+                        msg <- "npages must be between 1 and 1,000"
+                        res$status <- 500 # Bad request
+                        list(error=jsonlite::unbox(msg))
             }
             
             list(
