@@ -326,8 +326,8 @@ complete = function(links,
                                                               html_text() %>% 
                                                               str_trim()
                                                   
-                                                  if ("Classe energetica" %in% web) {
-                                                              pos = match("Classe energetica",web)
+                                                  if ("Efficienza energetica" %in% web) {
+                                                              pos = match("Efficienza energetica",web)
                                                               return(web[pos+1])
                                                   } else {
                                                               return(NA_character_)
