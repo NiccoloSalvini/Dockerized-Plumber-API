@@ -42,8 +42,9 @@ all.links= function(npages = 10,
                         cat(list.of.pages.imm[2])
             }
             
-            cl = makeCluster(detectCores()-1) #using max cores - 1 for parallel processing
-            registerDoParallel(cl)
+            cores = detectCores(logical = FALSE)
+            cl = makeCluster(cores)
+            registerDoParallel(cl, cores=cores)
             
             listone = foreach(i = seq_along(list.of.pages.imm),
                               .packages = vec.pacchetti,
@@ -87,6 +88,7 @@ all.links= function(npages = 10,
                                           
                                           x = scrapehref.imm(list.of.pages.imm[i]) 
                               }
-            on.exit(stopCluster(cl))
+            stopImplicitCluster()
+            stopCluster(cl)
             return(listone)
 }

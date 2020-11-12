@@ -20,8 +20,9 @@ vec.pacchetti = c("dplyr",
 complete = function(links,
                     npages = 10){
             
-            cl = makeCluster(detectCores()-1)
-            registerDoParallel(cl)
+            cores = detectCores(logical = FALSE)
+            cl = makeCluster(cores)
+            registerDoParallel(cl, cores=cores)
             
             ALL = foreach(i = seq_along(links),
                           .packages = vec.pacchetti,
@@ -878,7 +879,7 @@ complete = function(links,
                                       }
                                       
                                       x = get.data.catsing(links[i])}
-            
+            stopImplicitCluster()
             stopCluster(cl)
             return(ALL)
             

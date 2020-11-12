@@ -63,8 +63,9 @@ scrape = function(npages = 10,
             cat(list.of.pages.imm[2],"\n") 
 
             
-            cl = makeCluster(detectCores()-1)
-            registerDoParallel(cl)
+            cores = detectCores(logical = FALSE)
+            cl = makeCluster(cores)
+            registerDoParallel(cl, cores=cores)
             result = foreach(i = seq_along(list.of.pages.imm),
                              .packages = vec.pacchetti,
                              .combine = "bind_rows",
@@ -255,7 +256,8 @@ scrape = function(npages = 10,
                                          
                                          x = get.data.caturl(list.of.pages.imm[i])}
             
-            on.exit(stopCluster(cl))
+            stopImplicitCluster()
+            stopCluster(cl)
             
             return(result) ## RETURN ALL THE STUFF ----
 }
