@@ -1,5 +1,5 @@
 ---
-title: "Asynchronous HTTP API Scraping [Immobiliare.it](https://www.immobiliare.it/)"
+title: "REST API Scraping for [Immobiliare.it](https://www.immobiliare.it/)"
 output: 
   github_document:
     toc: TRUE
@@ -33,7 +33,7 @@ knitr::knit_hooks$set(imgcenter = function(before, options, envir){  # to center
 
 <img src="img/logo.png" align="right" height="80" />
  
-## API Infrastructure
+## REST API Infrastructure
 
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity) <a href="https://www.buymeacoffee.com/gbraad" target="_blank"><img src="img/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
@@ -45,23 +45,28 @@ _date_: Last update: `r format(Sys.Date(), "%d %B, %Y")`
 <br> 
 
  
-This **HTTP API** provides a way to scrape the public [Immobiliare.it](https://www.immobiliare.it/) database of Real Estate rental market. Plumber does not have in-built features to handle calls to the endpoints **Asynchronously**, as a matter of fact this is handled inside the `plumber.R` API body by the `foreach` package. Default @params provides the Real Estate rental Milan zone, nonetheless it is possible to specify the city, the number of webpages of interest and also the type as selling or rental market. get_data.R sources an API endpoint function to extract data from a predefined url (i.e. Milan rental real estate). Data is then sent to a Mongo ATLAS db. 
+The follwing **REST API** provides a way to collect public [Immobiliare.it](https://www.immobiliare.it/) data for Real Estate rental market. Plumber endpoints calls **Parallel** and **Dockerized** scraping functions within the `foreach` %dopar%. Default @params provides the Real Estate rental Milan zone, nonetheless it is possible to specify the city, the number of webpages of interest as well as the market type as selling or rental market. */scrape endpoint exploits a shortest path shortcut in scraping leading to a very fast data gathering.
+Moreover it has a further parameter macrozone that allows to select specific zone (NIL Nucleo Identità Locale) within the city, more details in the below documentation.
+get_data.R sources an API endpoint function to extract data from a predefined url (i.e. Milan rental real estate). Data is then sent to a Mongo ATLAS db ( _in itinere_). The system is hosted on AWS Ec2 instance free tier, please try not to send too many requests, this is open sourced and on completely on me. Feel free to leave a tip if you enjoined it!
+
+**QUERY URL**:
+
+`ec2-15-161-94-121.eu-south-1.compute.amazonaws.com`    
+
+
 future improvements: 
 
-- specification of the Macrozone and Microzone
 - NGINX reverse proxy 
 - Docker compose with a scheduler running behind 
-- AWS EC2 server
 
-API is built with `Plumber`, further documentation can be found [here](https://www.rplumber.io/index.html)
+The API framework is the R `Plumber`, further documentation can be found at its dedicated [website](https://www.rplumber.io/index.html). A sketch of the infrastructure below
 
 ```{r infra, echo=FALSE, imgcenter = TRUE, fig.cap="infra"}
-knitr::include_graphics("img/infra.PNG") 
+knitr::include_graphics("img/tot_infra.jpg") 
 ```
 
 
 <br><br>
-
 
 
 minimal reprex why `foreach` handles requests faster vs `furrr` (`future` spin-off). On x axis the number of urls processed, on y axis run time:
@@ -112,8 +117,8 @@ knitr::include_graphics("img/run_timeforeach.png")
             
 ```
 
-## Query Examples:
-__on default localhost: 127.0.0.1 and port: 9801
+## Query calls Examples:
+__on default localhost: 127.0.0.1 and port: 9801__
 
 * **/ scrape** : _npages  = 10, city = "milan", type =  "affitto", macrozone = "fiera", "centro"_
 
