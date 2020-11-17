@@ -1,4 +1,4 @@
-source(here::here("scraping/_scrape.R"),echo = FALSE)
+source(here::here("scraping/_fastscrape.R"),echo = FALSE)
 
 vec.pacchetti = c("dplyr",
                   "tibble",
