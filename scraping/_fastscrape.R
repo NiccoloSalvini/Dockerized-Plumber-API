@@ -1,9 +1,9 @@
 ## [ fastscrape ] ----
 ## first endpoint function 
 options(future.rng.onMisuse="ignore")
-scrape = function(npages_vec){
+fastscrape = function(npages_vec){
             tic()
-            suppressWarnings(plan(multisession, workers = availableCores())) ## sviluppa strategia
+            plan(multisession, workers = availableCores()) ## sviluppa strategia
             result = tibble(
                         title =  future_map(npages_vec, possibly( ~{
                                     sesh = html_session(.x, user_agent(agent = agents[sample(1)]))
@@ -28,8 +28,6 @@ scrape = function(npages_vec){
             )
             
             toc()
-            return(result)
-
-            
+            return(result) 
 
 }

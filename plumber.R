@@ -33,7 +33,7 @@ vec_libs = c("dplyr",
 
 ## Loading Packages
 message("Loading Packages...")
-invisible(lapply(vec.pacchetti, library, character.only = TRUE))
+invisible(lapply(vec_libs, library, character.only = TRUE))
 
 ## 2.0 Source Helpers (UTILS), Scraping functions and logging (not yet)  ----
 ## utils helpers
@@ -147,7 +147,7 @@ function(npages = 10,
             cat("Query url sent:",npages_vec[2],"\n")
             
             ## endpoint scraping execution
-            list(scrape(npages_vec))
+            list(fastscrape(npages_vec))
            
 }
 
@@ -222,7 +222,7 @@ function(npages = 10,
             links =  future_map(npages_vec, possibly( ~{
                         sesh = html_session(.x, user_agent(agent = agents[sample(1)]))
                         scrapehref_imm(session = sesh) },NA_character_, quiet = FALSE)) %>%  flatten_chr()
-            list(complete(links))
+            list(completescrape(links))
             
 }
 

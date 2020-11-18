@@ -17,7 +17,7 @@ vec.pacchetti = c("dplyr",
                   "purrr",
                   "mongolite")
 
-complete = function(links,
+completescrape = function(links,
                     npages = 10){
             
             cores = detectCores(logical = FALSE)

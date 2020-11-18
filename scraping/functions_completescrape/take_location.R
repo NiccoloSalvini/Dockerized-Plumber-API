@@ -17,9 +17,29 @@
 # c'è un altro modo per farla in un altro nodo
 # non so se mi conviene stravolgerlo 
 # visto che nell'altro modo non compare il civico 
-# mentre nel primo sì, quindi sotto la scrivo per 
+# mentre nel primo s
+# 
+# ì, quindi sotto la scrivo per 
 # completezza ma non penso di applicarlo, prende meno linee di codice 
 # di sicuro 
+
+
+
+take_spatialJSON = function(session) {
+  
+  json = read_html(session) %>% 
+    html_nodes(xpath = "/html/body/script[2]") %>%
+    html_text() %>%
+    fromJSON()
+  
+  spatial = json$listing$properties$location %>%
+    tibble() %>%  
+    mutate_if(is.character, list(~na_if(., ""))) %>% 
+    .[1,]
+  
+  return(spatial)
+} 
+
 
 take.address = function(session){
 
@@ -54,7 +74,7 @@ take.address = function(session){
 }
 
 
-
+### altenrative 
 take.addressALT = function(session){
   
   web = read_html(session) %>%
@@ -78,6 +98,7 @@ take.addressALT = function(session){
       str_trim()
   }
 }
+
 
 
   

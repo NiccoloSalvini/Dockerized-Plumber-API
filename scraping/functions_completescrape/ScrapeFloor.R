@@ -13,6 +13,8 @@
 # [1] "2° stabile, con ascensore"
 # 
 
+
+
 scrapefloor.imm = function(session){
   
   
@@ -28,4 +30,4 @@ scrapefloor.imm = function(session){
     return(NA_character_)
   }
   
-}   
+}

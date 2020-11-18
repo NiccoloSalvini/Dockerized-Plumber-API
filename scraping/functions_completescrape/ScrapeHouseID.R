@@ -7,12 +7,8 @@
 
 scrapehouse.ID= function(session) {
   
-  ID = session %>%
-    .$url %>% 
-    as.character() %>% 
-    # str_trunc(45) %>% 
-    str_extract('\\d+') %>% 
-    as.factor()
+  ID = session$url %>%  
+    str_extract("\\d+") 
 
   return(ID)
 }
