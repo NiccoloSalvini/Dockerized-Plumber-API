@@ -17,19 +17,19 @@ vec.pacchetti = c("dplyr",
                   "purrr",
                   "mongolite")
 
-completescrape = function(links,
-                    npages = 10){
+completescrape = function(links){
             
             cores = detectCores(logical = FALSE)
             cl = makeCluster(cores)
             registerDoParallel(cl, cores=cores)
-            
+            tic()
             ALL = foreach(i = seq_along(links),
                           .packages = vec.pacchetti,
                           .combine = "bind_rows",
-                          .multicombine = FALSE,
+                          .multicombine = TRUE,
                           .export = "links",
                           .verbose = TRUE,
+                          .inorder = FALSE,
                           .errorhandling="pass") %dopar% {
                                       
                                       ## Utils start----
@@ -46,15 +46,7 @@ completescrape = function(links,
                                                   'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0')
                                       
                                       
-                                      ## [ add other Headers ] ----
-                                      
-                                      
-                                      mails = c('heurtee@triderprez.cf',
-                                                'nonliqui@famalsa.tk',
-                                                'bemerker@vagenland.gq',
-                                                'deutoplasm@c032bjik.buzz',
-                                                'controllably@mirider.ga')
-                                      
+         
                                       
                                       len = function(x){
                                                   length(x) %>% 
@@ -66,34 +58,6 @@ completescrape = function(links,
                                       
                                       
                                       bind_rows = dplyr::bind_rows
-                                      
-                                      
-                                      
-                                      ## [ test if valid URL] ----
-                                      
-                                      is_url = function(url){
-                                                  re = "^(?:(?:http(?:s)?|ftp)://)(?:\\S+(?::(?:\\S)*)?@)?(?:(?:[a-z0-9\u00a1-\uffff](?:-)*)*(?:[a-z0-9\u00a1-\uffff])+)(?:\\.(?:[a-z0-9\u00a1-\uffff](?:-)*)*(?:[a-z0-9\u00a1-\uffff])+)*(?:\\.(?:[a-z0-9\u00a1-\uffff]){2,})(?::(?:\\d){2,5})?(?:/(?:\\S)*)?$"
-                                                  grepl(re, url)
-                                      }
-                                      
-                                      
-                                      
-                                      ##  [ test User agent ] ----
-                                      
-                                      get_ua = function(sess) {
-                                                  stopifnot(is.session(sess))
-                                                  stopifnot(is_url(sess$url))
-                                                  ua = sess$response$request$options$useragent
-                                                  return(ua)
-                                      }
-                                      
-                                      
-                                      
-                                      ## [ sleep fucntion to simulate request delay  ] ----
-                                      
-                                      dormi = function() {
-                                                  Sys.sleep(sample(seq(1, 2, by=0.001), 1))
-                                      }
                                       
                                       ##  end utils ---
                                       
@@ -799,86 +763,89 @@ completescrape = function(links,
                                                               session = session$response  
                                                   }
                                                   
-                                                  id         = tryCatch({scrapehouse.ID(session)}, error = function(e){ message("some problem occured in scrapehouse.ID") })
-                                                  lat        = tryCatch({scrapelat.imm(session)}, error = function(e){ message("some problem occured in scrapelat.imm") })
-                                                  long       = tryCatch({scrapelong.imm(session)}, error = function(e){ message("some problem occured in scrapelong.imm") })
-                                                  location   = tryCatch({take.address(session)}, error = function(e){ message("some problem occured in take.address") })
-                                                  condom     = tryCatch({scrapecondom.imm(session)}, error = function(e){ message("some problem occured in scrapecondom.imm") })
-                                                  buildage   = tryCatch({scrapeagebuild.imm(session)}, error = function(e){ message("some problem occured in scrapeagebuild.imm") })
-                                                  floor      = tryCatch({scrapefloor.imm(session)}, error = function(e){ message("some problem occured in scrapefloor.imm") })
-                                                  indivsapt  = tryCatch({scrapetype.imm(session)}, error = function(e){ message("some problem occured in scrapetype.imm") })
-                                                  locali     = tryCatch({scrapecompart.imm(session)}, error = function(e){ message("some problem occured in scrapecompart.imm") })
-                                                  tpprop     = tryCatch({scrapeproptype.imm(session)}, error = function(e){ message("some problem occured in scrapeproptype.imm") })
-                                                  status     = tryCatch({scrapestatus.imm(session)}, error = function(e){ message("some problem occured in scrapestatus.imm") })
-                                                  heating    = tryCatch({scrapeheating.imm(session)}, error = function(e){ message("some problem occured in scrapeheating.imm") })
-                                                  ac         = tryCatch({scrapeaircondit.imm(session)}, error = function(e){ message("some problem occured in scrapeaircondit.imm") })
-                                                  date       = tryCatch({scrapeaddate.imm(session)}, error = function(e){ message("some problem occured in scrapeaddate.imm") })
-                                                  catastinfo = tryCatch({scrapecatastinfo.imm(session)}, error = function(e){ message("some problem occured in scrapecatastinfo.imm") })
-                                                  aptchar    = tryCatch({scrapeaptchar.imm(session)}, error = function(e){ message("some problem occured in scrapeaptchar.imm") })
-                                                  photosnum  = tryCatch({scrapephotosnum.imm(session)}, error = function(e){ message("some problem occured in scrapephotosnum.imm") })
-                                                  age        = tryCatch({scrapeage.imm(session)}, error = function(e){ message("some problem occured in scrapeage.imm") })
-                                                  enclass    = tryCatch({scrapeenclass.imm(session)}, error = function(e){ message("some problem occured in scrapeenclass.imm") })
-                                                  contr      = tryCatch({scrapecontr.imm(session)}, error = function(e){ message("some problem occured in scrapecontr.imm") })
-                                                  disp       = tryCatch({scrapedisp.imm(session)}, error = function(e){ message("some problem occured in scrapedisp.imm") })
-                                                  totpiani   = tryCatch({scrapetotpiani.imm(session)}, error = function(e){ message("some problem occured in scrapetotpiani.imm") })
-                                                  postauto   = tryCatch({scrapepostauto.imm(session)}, error = function(e){ message("some problem occured in scrapepostauto.imm") })
-                                                  review     = tryCatch({scrapereareview.imm(session)}, error = function(e){ message("some problem occured in scrapereareview.imm") })
-                                                  metrat     = tryCatch({scrapemetrature.imm(session)}, error = function(e){ message("some problem occured in scrapemetrature.imm") })
-                                                  multi      = tryCatch({scrapehasmulti.imm(session)}, error = function(e){ message("some problem occured in scrapehasmulti.imm") })
-                                                  lowprice   = tryCatch({scrapeloweredprice.imm(session)}, error = function(e){ message("some problem occured in scrapeloweredprice.imm") })
-                                                  ###
-                                                  nrooms     = tryCatch({scrapenroomsINS.imm(session)}, error = function(e){ message("some problem occured in scrapenroomsINS.imm") })
-                                                  price      = tryCatch({scrapepriceINS.imm(session)}, error = function(e){ message("some problem occured in scrapepriceINS.imm") })
-                                                  sqfeet     = tryCatch({scrapesqfeetINS.imm(session)}, error = function(e){ message("some problem occured in scrapesqfeetINS.imm") })
-                                                  title      = tryCatch({scrapetitleINS.imm(session)}, error = function(e){ message("some problem occured in scrapetitleINS.imm") })
-                                                  
-                                                  
-                                                  
-                                                  combine = tibble(
-                                                              ID        = id,
-                                                              LAT       = lat,
-                                                              LONG      = long,
-                                                              LOCATION  = location,
-                                                              CONDOM    = condom,
-                                                              BUILDAGE  = buildage,
-                                                              FLOOR     = floor,
-                                                              INDIVSAPT = indivsapt,
-                                                              LOCALI    = locali,
-                                                              TPPROP    = tpprop,
-                                                              STATUS    = status,
-                                                              HEATING   = heating,
-                                                              AC        = ac,
-                                                              PUB_DATE  = date,
-                                                              CATASTINFO= catastinfo,
-                                                              APTCHAR   = aptchar,
-                                                              PHOTOSNUM = photosnum,
-                                                              AGE       = age,
-                                                              ENCLASS   = enclass,
-                                                              CONTR     = contr,
-                                                              DISP      = disp,
-                                                              TOTPIANI  = totpiani,
-                                                              PAUTO     = postauto,
-                                                              REVIEW    = review,
-                                                              METRATURA = metrat,
-                                                              HASMULTI  = multi,
-                                                              LOWRDPRICE= lowprice,
+                                                  result = tibble(
+                                                              id         = tryCatch({scrapehouse.ID(session)}, error = function(e){ message("some problem occured in scrapehouse.ID") }),
+                                                              lat        = tryCatch({scrapelat.imm(session)}, error = function(e){ message("some problem occured in scrapelat.imm") }),
+                                                              long       = tryCatch({scrapelong.imm(session)}, error = function(e){ message("some problem occured in scrapelong.imm") }),
+                                                              location   = tryCatch({take.address(session)}, error = function(e){ message("some problem occured in take.address") }),
+                                                              condom     = tryCatch({scrapecondom.imm(session)}, error = function(e){ message("some problem occured in scrapecondom.imm") }),
+                                                              buildage   = tryCatch({scrapeagebuild.imm(session)}, error = function(e){ message("some problem occured in scrapeagebuild.imm,") }),
+                                                              floor      = tryCatch({scrapefloor.imm(session)}, error = function(e){ message("some problem occured in scrapefloor.imm") }),
+                                                              indivsapt  = tryCatch({scrapetype.imm(session)}, error = function(e){ message("some problem occured in scrapetype.imm") }),
+                                                              locali     = tryCatch({scrapecompart.imm(session)}, error = function(e){ message("some problem occured in scrapecompart.imm") }),
+                                                              tpprop     = tryCatch({scrapeproptype.imm(session)}, error = function(e){ message("some problem occured in scrapeproptype.imm") }),
+                                                              status     = tryCatch({scrapestatus.imm(session)}, error = function(e){ message("some problem occured in scrapestatus.imm") }),
+                                                              heating    = tryCatch({scrapeheating.imm(session)}, error = function(e){ message("some problem occured in scrapeheating.imm") }),
+                                                              ac         = tryCatch({scrapeaircondit.imm(session)}, error = function(e){ message("some problem occured in scrapeaircondit.imm")}),
+                                                              date       = tryCatch({scrapeaddate.imm(session)}, error = function(e){ message("some problem occured in scrapeaddate.imm") }),
+                                                              catastinfo = tryCatch({scrapecatastinfo.imm(session)}, error = function(e){ message("some problem occured in scrapecatastinfo.imm")}),
+                                                              aptchar    = tryCatch({scrapeaptchar.imm(session)}, error = function(e){ message("some problem occured in scrapeaptchar.imm") }),
+                                                              photosnum  = tryCatch({scrapephotosnum.imm(session)}, error = function(e){ message("some problem occured in scrapephotosnum.imm") }),
+                                                              age        = tryCatch({scrapeage.imm(session)}, error = function(e){ message("some problem occured in scrapeage.imm") }),
+                                                              enclass    = tryCatch({scrapeenclass.imm(session)}, error = function(e){ message("some problem occured in scrapeenclass.imm") }),
+                                                              contr      = tryCatch({scrapecontr.imm(session)}, error = function(e){ message("some problem occured in scrapecontr.imm") }),
+                                                              disp       = tryCatch({scrapedisp.imm(session)}, error = function(e){ message("some problem occured in scrapedisp.imm") }),
+                                                              totpiani   = tryCatch({scrapetotpiani.imm(session)}, error = function(e){ message("some problem occured in scrapetotpiani.imm") }),
+                                                              postauto   = tryCatch({scrapepostauto.imm(session)}, error = function(e){ message("some problem occured in scrapepostauto.imm") }),
+                                                              review     = tryCatch({scrapereareview.imm(session)}, error = function(e){ message("some problem occured in scrapereareview.imm") }),
+                                                              metrat     = tryCatch({scrapemetrature.imm(session)}, error = function(e){ message("some problem occured in scrapemetrature.imm") }),
+                                                              multi      = tryCatch({scrapehasmulti.imm(session)}, error = function(e){ message("some problem occured in scrapehasmulti.imm") }),
+                                                              lowprice   = tryCatch({scrapeloweredprice.imm(session)}, error = function(e){ message("some problem occured in scrapeloweredprice.imm") }),
                                                               ###
-                                                              NROOMS    = nrooms,
-                                                              PRICE     = price,
-                                                              SQFEET    = sqfeet,
-                                                              TITLE     = title)
+                                                              nrooms     = tryCatch({scrapenroomsINS.imm(session)}, error = function(e){ message("some problem occured in scrapenroomsINS.imm") }),
+                                                              price      = tryCatch({scrapepriceINS.imm(session)}, error = function(e){ message("some problem occured in scrapepriceINS.imm") }),
+                                                              sqfeet     = tryCatch({scrapesqfeetINS.imm(session)}, error = function(e){ message("some problem occured in scrapesqfeetINS.imm") }),
+                                                              title      = tryCatch({scrapetitleINS.imm(session)}, error = function(e){ message("some problem occured in scrapetitleINS.imm") })
+                                                              
+                                                  )
                                                   
-                                                  combine %>% 
-                                                              select(ID, CONDOM, FLOOR, LAT, LONG, INDIVSAPT, 
-                                                                     LOCALI, STATUS, HEATING, AC, PUB_DATE, APTCHAR, 
-                                                                     PHOTOSNUM, AGE, ENCLASS, DISP,TPPROP,  METRATURA, LOWRDPRICE, PAUTO, REVIEW, TOTPIANI, 
-                                                                     BUILDAGE, CONTR, LOCATION, CATASTINFO, HASMULTI, NROOMS, PRICE, SQFEET, TITLE)
+                                                  # combine = tibble(
+                                                  #             ID        = id,
+                                                  #             LAT       = lat,
+                                                  #             LONG      = long,
+                                                  #             LOCATION  = location,
+                                                  #             CONDOM    = condom,
+                                                  #             BUILDAGE  = buildage,
+                                                  #             FLOOR     = floor,
+                                                  #             INDIVSAPT = indivsapt,
+                                                  #             LOCALI    = locali,
+                                                  #             TPPROP    = tpprop,
+                                                  #             STATUS    = status,
+                                                  #             HEATING   = heating,
+                                                  #             AC        = ac,
+                                                  #             PUB_DATE  = date,
+                                                  #             CATASTINFO= catastinfo,
+                                                  #             APTCHAR   = aptchar,
+                                                  #             PHOTOSNUM = photosnum,
+                                                  #             AGE       = age,
+                                                  #             ENCLASS   = enclass,
+                                                  #             CONTR     = contr,
+                                                  #             DISP      = disp,
+                                                  #             TOTPIANI  = totpiani,
+                                                  #             PAUTO     = postauto,
+                                                  #             REVIEW    = review,
+                                                  #             METRATURA = metrat,
+                                                  #             HASMULTI  = multi,
+                                                  #             LOWRDPRICE= lowprice,
+                                                  #             ###
+                                                  #             NROOMS    = nrooms,
+                                                  #             PRICE     = price,
+                                                  #             SQFEET    = sqfeet,
+                                                  #             TITLE     = title)
+                                                  # 
+                                                  # combine %>% 
+                                                  #             select(ID, CONDOM, FLOOR, LAT, LONG, INDIVSAPT, 
+                                                  #                    LOCALI, STATUS, HEATING, AC, PUB_DATE, APTCHAR, 
+                                                  #                    PHOTOSNUM, AGE, ENCLASS, DISP,TPPROP,  METRATURA, LOWRDPRICE, PAUTO, REVIEW, TOTPIANI, 
+                                                  #                    BUILDAGE, CONTR, LOCATION, CATASTINFO, HASMULTI, NROOMS, PRICE, SQFEET, TITLE)
                                                   
-                                                  return(combine) 
+                                                  return(result) 
                                                   
                                       }
                                       
-                                      x = get.data.catsing(links[i])}
+                                      x = get.data.catsing(links[i])
+                                      }
+            toc()
             stopImplicitCluster()
             stopCluster(cl)
             return(ALL)

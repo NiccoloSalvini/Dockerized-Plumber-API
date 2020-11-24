@@ -11,7 +11,3 @@ scrapeprimarykey_imm = function(session){
             return(web)
 }
 
-# 
-# if(get_ua(session) == "libcurl/7.64.1 r-curl/4.3 httr/1.4.1") 
-#   stop("Error: You are using the default user agent you might be caught.
-#        try sourcing the utils.R where agents are stored")

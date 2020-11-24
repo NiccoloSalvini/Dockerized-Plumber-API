@@ -37,14 +37,12 @@ scrapepriceINS.imm = function(session) {
   opensess = read_html(session)
   price  = opensess %>% 
     html_nodes(css =".im-mainFeatures__title") %>% 
-    html_text() %>%
-    str_trim() 
+    html_text(trim = T) 
   
   if(is.null(price) || identical(price, character(0))) {
     price2 = opensess %>%
       html_nodes(css ='.im-features__value , .im-features__title') %>% 
-      html_text() %>%
-      str_trim()
+      html_text(trim = T)
     
     if ("prezzo" %in% price2) {
       pos = match("prezzo",price2)

@@ -4,13 +4,11 @@
 
 scrapetitle_imm = function(session){
             
-            web = read_html(session) %>% 
-                        html_nodes(css = '.text-primary a') %>% 
-                        html_text() %>% 
-                        str_replace_all('\n','') %>% 
-                        str_squish() %>% 
-                        as.character()
-            return(web)
+            title = read_html(session) %>% 
+                        html_nodes(css = ".text-primary a") %>% 
+                        html_text(trim = T) %>%
+                        str_remove(", Milano")
+            return(title)
 }
 
 

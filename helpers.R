@@ -57,17 +57,6 @@ sourceEntireFolder = function(folderName, verbose=FALSE, showWarnings=TRUE) {
             return(invisible(NULL))
 }
 
-
-## [ test if URL]  ----
-
-
-is_url = function(url){
-            re = "^(?:(?:http(?:s)?|ftp)://)(?:\\S+(?::(?:\\S)*)?@)?(?:(?:[a-z0-9\u00a1-\uffff](?:-)*)*(?:[a-z0-9\u00a1-\uffff])+)(?:\\.(?:[a-z0-9\u00a1-\uffff](?:-)*)*(?:[a-z0-9\u00a1-\uffff])+)*(?:\\.(?:[a-z0-9\u00a1-\uffff]){2,})(?::(?:\\d){2,5})?(?:/(?:\\S)*)?$"
-            grepl(re, url)
-}
-
-
-
 ##  [ get UA ] -----
 
 
@@ -82,7 +71,7 @@ get_ua = function(sess) {
 ##  [Get Robot.txt delay]   -----
 
 
-.get_delay = function(domain) {
+get_delay = function(domain) {
             
             message(sprintf("Refreshing robots.txt data for %s...", domain))
             
@@ -106,10 +95,8 @@ get_ua = function(sess) {
 checkpermission = function(dom) {
             
             robot = robotstxt(domain = dom)
-            vd = robot$check()[1]
-            if (vd) {
-                        cat("\nrobot.txt dice: va bene, puoi!")
-            } else {cat("\nrobot.txt dice: non puoi, smettila")}
+            vd = robot$check()[1] 
+            return(vd)
 }
 
 
@@ -122,73 +109,77 @@ dormi = function() {
 
 
 
-## [ is url] ----
-## checks if the url inputted is well composed according to regex
+## [ test if url ] ----
+## checks if it is a proper url according to regex
 
 is_url = function(url){
             re = "^(?:(?:http(?:s)?|ftp)://)(?:\\S+(?::(?:\\S)*)?@)?(?:(?:[a-z0-9\u00a1-\uffff](?:-)*)*(?:[a-z0-9\u00a1-\uffff])+)(?:\\.(?:[a-z0-9\u00a1-\uffff](?:-)*)*(?:[a-z0-9\u00a1-\uffff])+)*(?:\\.(?:[a-z0-9\u00a1-\uffff]){2,})(?::(?:\\d){2,5})?(?:/(?:\\S)*)?$"
             grepl(re, url)
 }
 
-## [get_link] ----
-## return composition of the url 
-## deprecated...
-
-get_link = function(city = "milano",
-                    type = "affitto",
-                    npages = 10,
-                    .url,
-                    # .macrozone= c("fiera", "centro"),
-                    .list = FALSE) {
-            tipo = tolower(type)
-            citta = tolower(city) %>% iconv(to='ASCII//TRANSLIT')
-            macrozone = tolower(.macrozone) %>% iconv(to='ASCII//TRANSLIT')
-            
-            if(!tipo %in% c("affitto", "vendita")){stop("Affitto has to be specified")}
-            # if(!identical(tipo, "affitto")){stop("Affitto has to be specified")}
-            
-            # if(!identical(macrozone, c("fiera", "centro"))){
-            #             idzone = list()
-            #             for(i in seq_along(macrozone)){
-            #                         zone = fromJSON("zone.json")
-            #                         zone$name = zone$name %>%  tolower()
-            #                         if(grepl(macrozone[i], zone)[2]){
-            #                                     pos = grepl(macrozone[i],zone$name, ignore.case = T)
-            #                                     idzone[i] = zone[pos,] %>%  select(id)
-            #                         } else { 
-            #                                     stop(paste0("zone:", macrozone[i], " is not recognized"))
-            #                                     }
-            #             }
-            #             idzone = idzone %>%  unlist() %>%  unique()
-            #             mzones =  glue::glue_collapse(x = idzone, "&idMZona[]=") %>% 
-            #                         paste0("?idMZona[]=",.)
-            #             
-            #             dom = "https://www.immobiliare.it/"
-            #             stringa = paste0(dom,tipo,"-case/",citta,"/",mzones)
-            #             lista = c()
-            #             url = list(stringa = stringa, lista = lista)
-            # }
-            dom = "https://www.immobiliare.it/"
-            stringa = paste0(dom,tipo,"-case/",citta,"/")
-            lista = c()
-            url = list(stringa = stringa, lista = lista)
-            if(.list == T){
-                        vecurls = str_c(stringa, '?pag=', 2:npages) %>% 
-                                    append(stringa, after = 0)
-                        url$lista = vecurls
-                        return(url)
-            } else {
-                        return(url)
-            }
-}
-
 ## [convert _empty] ----
 ## for log append purposes
+
 convert_empty <- function(string) {
             if (string == "") {
                         "-"
             } else {
                         string
             }
+}
+
+
+
+
+## [get_link] ----
+## reverse engineer the link 
+
+get_link = function(npages ,
+                    city,
+                    macrozone,
+                    type) {
+            
+            ## sanitize input
+            tipo = tolower(type) %>% str_trim()
+            citta = tolower(city) %>% iconv(to='ASCII//TRANSLIT') %>%  str_trim()
+            
+            ## url composition reverse engineering NOT ELEGANT
+            if(!missing("macrozone")){
+                        macrozone = tolower(macrozone) %>% iconv(to='ASCII//TRANSLIT') %>%  str_trim()
+                        idzone = list()
+                        zone = fromJSON(here::here("ALLzone.json"))
+                        for(i in seq_along(macrozone)){
+                                    zone$name = zone$name %>%  tolower()
+                                    if(grepl(macrozone[i], zone)[2]){
+                                                pos = grepl(macrozone[i],zone$name, ignore.case = T)
+                                                idzone[i] = zone[pos,] %>%  select(id)
+                                    } else {
+                                                stop(paste0("zone:", macrozone[i], " is not recognized"))}
+                        }
+                        idzone = idzone %>%  unlist() %>%  unique()
+                        mzones =  glue::glue_collapse(x = idzone, "&idMZona[]=")
+                        
+                        dom = "https://www.immobiliare.it/"
+                        stringa = paste0(dom, tipo, "-case/", citta,"/?", mzones) 
+                        if(is_url(stringa)){
+                                    npages_vec = str_c(stringa, '&pag=', 2:npages) %>%
+                                                append(stringa, after = 0)
+                        } else {
+                                    stop("url imputted does not seem to be Real")
+                        }
+                        
+                        
+            } else {
+                        dom = "https://www.immobiliare.it/"
+                        stringa = paste0(dom, tipo, "-case/", citta,"/") # mzones
+                        if (is_url(stringa)){
+                                    npages_vec = glue("{stringa}?pag={2:npages}") %>%
+                                                append(stringa, after = 0)  
+                        } else {
+                                    stop("url imputted does not seem to be Real")
+                        }
+            }
+            return(npages_vec)
+            
 }
 

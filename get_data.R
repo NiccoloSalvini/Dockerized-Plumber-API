@@ -1,27 +1,12 @@
-source(here::here("scraping/_fastscrape.R"),echo = FALSE)
+## [ get_data ] ----
+## first endpoint function 
+options(future.rng.onMisuse="ignore")
 
-vec.pacchetti = c("dplyr",
-                  "tibble",
-                  "magrittr",
-                  "rvest",
-                  "tidyr",
-                  "httr",
-                  "stringi",
-                  "lubridate",
-                  "jsonlite",
-                  "doParallel",
-                  "stringr",
-                  "here",
-                  "purrr", 
-                  "mongolite")
-
-invisible(lapply(vec.pacchetti, library, character.only = TRUE))
-
-
-get_data = function(npages = 10, city = "milano", type = "affitto", append = T) {
+get_data = function(links) {
+            
             date = format(lubridate::today(), "%d-%b-%Y")  %>% as.character()
             filename = paste0('shared-data/imm-',date,'.csv')
-            all = scrape(npages, city, type)
+            all = completescrape2(links)
             
             url_path  = "mongodb+srv://salvini:mucrini27@cluster0.qs3zp.mongodb.net/api-immobiliare?retryWrites=true&w=majority"
             db = mongo(
@@ -33,4 +18,3 @@ get_data = function(npages = 10, city = "milano", type = "affitto", append = T) 
             db$insert(all)
             
 }
-

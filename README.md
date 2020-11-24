@@ -1,7 +1,9 @@
-REST API Scraping for [Immobiliare.it](https://www.immobiliare.it/)
+REST Parallel Scraping API for
+[Immobiliare.it](https://www.immobiliare.it/) data
 ================
 
-  - [REST API Infrastructure](#rest-api-infrastructure)
+  - [Intro](#intro)
+  - [future improvements:](#future-improvements)
   - [API Docs:](#api-docs)
   - [Query API calls Examples:](#query-api-calls-examples)
 
@@ -9,63 +11,52 @@ REST API Scraping for [Immobiliare.it](https://www.immobiliare.it/)
 
 <img src="img/logo.png" align="right" height="80" />
 
-## REST API Infrastructure
+## Intro
 
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
 <a href="https://www.buymeacoffee.com/gbraad" target="_blank"><img src="img/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="90" height="20"><linearGradient id="b" x2="0" y2="100%"><stop offset="0" stop-color="#bbb" stop-opacity=".1"/><stop offset="1" stop-opacity=".1"/></linearGradient><clipPath id="a"><rect width="90" height="20" rx="3" fill="#fff"/></clipPath><g clip-path="url(#a)"><path fill="#555" d="M0 0h37v20H0z"/><path fill="#97CA00" d="M37 0h53v20H37z"/><path fill="url(#b)" d="M0 0h90v20H0z"/></g><g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="110">
-<text x="195" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="270">build</text><text x="195" y="140" transform="scale(.1)" textLength="270">build</text><text x="625" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="430">success</text><text x="625" y="140" transform="scale(.1)" textLength="430">success</text></g>
-</svg>
+[![Generic
+badge](https://img.shields.io/badge/API-down-red.svg)](https://shields.io/)
 
 *author*: **[Niccolò Salvini](https://niccolosalvini.netlify.app/)**
-*date*: Last update: 17 novembre, 2020
+*date*: Last update: 24 novembre, 2020
 
 <br>
 
-The follwing **REST API** provides a way to collect public
-[Immobiliare.it](https://www.immobiliare.it/) data for Real Estate
-rental market. Plumber endpoints calls **Parallel** and **Dockerized**
-scraping functions within the `foreach` %dopar%. Default @params
-provides the Real Estate rental Milan zone, nonetheless it is possible
-to specify the city, the number of webpages of interest as well as the
-market type as selling or rental market. \*/scrape endpoint exploits a
-shortest path shortcut in scraping leading to a very fast data
-gathering. Moreover it has a further parameter macrozone that allows to
-select specific zone (NIL Nucleo Identità Locale) within the city, more
-details in the below documentation. get\_data.R sources an API endpoint
-function to extract data from a predefined url (i.e. Milan rental real
-estate). Data is then sent to a Mongo ATLAS db ( *in itinere*). The
-system is hosted on AWS Ec2 instance free tier, please try not to send
-too many requests, this is open sourced and on completely on me. Feel
-free to leave a tip if you enjoined it\!
+The following **REST API** provides a way to collect public
+[Immobiliare.it](https://www.immobiliare.it/) data from Real Estate
+rental and selling market over a various range of cities. The API
+framework is R [**Plumber**](https://www.rplumber.io/) which calls
+**Parallelized** (multisession parallel back end)
+[`furrr`](https://www.tidyverse.org/blog/2020/10/furrr-0-2-0/)
+([`future`](https://github.com/HenrikBengtsson/future) + `purrr`)
+scraping functions. The idea is to mimic immobiliare url semantic and
+then calling scraping functions on the targeted url. The plumber
+endpoints are then containerized with **Docker** and hosted in a **AWS
+EC2** server. Parallelization has been tested under different angles
+(speed, resposive debugging, {tidyverse} familiarity). A further option
+might be `foreach` + `doMC` /(`doFuture`), which results in faster
+scraping in local, but it is has a worst debugging experience,
+unfamiliarity with the {tidyverse} stack, as well as displaying equal
+performance on the Linux server.
 
 **API URL**:
 
 `ec2-15-161-94-121.eu-south-1.compute.amazonaws.com`
 
-**SWAGGER UI FOR EASY API COMPLETION**
+**SWAGGER UI FOR OAS3**
 
 `ec2-15-161-94-121.eu-south-1.compute.amazonaws.com/__docs__/`
-
-future improvements:
-
-  - NGINX reverse proxy
-  - Docker compose with a scheduler running behind
-  - HTTPS security
-
-The API framework is the R `Plumber`, further documentation can be found
-at its dedicated [website](https://www.rplumber.io/index.html). A sketch
-of the infrastructure below
 
 <p align="center">
 
 <div class="figure">
 
-<img src="img/tot_infra.jpg" alt="infra" width="2953" />
+<img src="img/SoftwareDevWF.jpg" alt="sf development" width="978" />
 
 <p class="caption">
 
-infra
+sf development
 
 </p>
 
@@ -73,10 +64,19 @@ infra
 
 </p>
 
+## future improvements:
+
+  - NGINX reverse proxy :chart\_with\_upwards\_trend:
+  - Docker compose with a scheduler evoking endpoints and daily storing
+    data :x:
+  - HTTPS protocols :chart\_with\_upwards\_trend:
+
 <br><br>
 
-simulation conduced on `foreach` parallel scraping faster vs `furrr`
-(`future` and `purrr` Tidy evaluation). On x axis the number of urls
+simulation conducted on `foreach` with `doMC` parallel back end vs
+`furrr` (`future` and `purrr` Tidy evaluation) on local machine
+Microsoft Windows 10 Home with Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz,
+2201 Mhz, 6 cores, 12 logical processors. On x axis the number of urls
 processed, on y axis run time:
 
 <p align="center">

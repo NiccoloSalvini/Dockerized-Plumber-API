@@ -17,12 +17,13 @@ vec_libs = c("dplyr",
              "here", ## newlib
              "rvest",
              "tidyr",
+             "doFuture", ## newlib ----------------
              "httr",
+             "robotstxt", ## newlib
              "parallel", ## newlib al posto di doParallel
              "stringi",
-             "furrr", ## new lib 
+             "furrr", ## new lib
              "lubridate",
-             "logger", ## newlib
              "jsonlite",
              "doParallel",
              "stringr",
@@ -49,7 +50,7 @@ sourceEntireFolder(here::here("scraping","functions_completescrape"))
 message("Sourcing endpoints functions...")
 source(here::here("scraping","_fastscrape.R"))
 source(here::here("scraping","_completescrape.R"))
-
+source(here::here("scraping","_completescrape2.R"))
 ## .csv generator --> connected with MongoDB ATLAS          
 source(here::here("get_data.R"))
 
@@ -58,7 +59,7 @@ source(here::here("get_data.R"))
 
 #* @apiTitle immobiliare.it data
 #* @apiDescription GET real-time data from immobiliare.it Real Estate Rental market
-#* @apiVersion 1.0.0
+#* @apiVersion 2.0.0
 #* @apiLicense list(name = "Apache 2.0", url = "https://www.apache.org/licenses/LICENSE-2.0.html")
 
 
@@ -104,38 +105,7 @@ function(npages = 10,
                         stop(list(error=jsonlite::unbox(msg)))     
             }
             
-            ## sanitize input 
-            tipo = tolower(type) %>% str_trim()
-            citta = tolower(city) %>% iconv(to='ASCII//TRANSLIT') %>%  str_trim()
-            
-            ## url composition reverse engineering NOT ELEGANT
-            if(!missing("macrozone")){
-                        macrozone = tolower(macrozone) %>% iconv(to='ASCII//TRANSLIT') %>%  str_trim()
-                        idzone = list()
-                        zone = fromJSON(here::here("ALLzone.json"))
-                        for(i in seq_along(macrozone)){
-                                    zone$name = zone$name %>%  tolower()
-                                    if(grepl(macrozone[i], zone)[2]){
-                                                pos = grepl(macrozone[i],zone$name, ignore.case = T)
-                                                idzone[i] = zone[pos,] %>%  select(id)
-                                    } else {
-                                                stop(paste0("zone:", macrozone[i], " is not recognized"))}
-                        }
-                        idzone = idzone %>%  unlist() %>%  unique()
-                        mzones =  glue::glue_collapse(x = idzone, "&idMZona[]=")
-                        
-                        dom = "https://www.immobiliare.it/"
-                        stringa = paste0(dom, tipo, "-case/", citta,"/?", mzones) 
-                        npages_vec = str_c(stringa, '&pag=', 2:npages) %>% 
-                                    append(stringa, after = 0) 
-                        
-            } else {
-                        dom = "https://www.immobiliare.it/"
-                        stringa = paste0(dom, tipo, "-case/", citta,"/") # mzones
-                        npages_vec = glue("{stringa}?pag={2:npages}") %>%
-                                    append(stringa, after = 0)  
-                        
-            }
+            npages_vec = get_link(npages, city, macrozone, type)
             
             if(thesis){
                         fix_url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069"
@@ -145,8 +115,9 @@ function(npages = 10,
             }
             
             cat("Query url sent:",npages_vec[2],"\n")
-            
-            ## endpoint scraping execution
+            dplyr::if_else(suppressMessages(paths_allowed(first(npages_vec))), "path is allowed", "path is not allowed according to robotxt")
+            ## open parallel backend 
+            plan(multisession) ## match availableCores() as default
             list(fastscrape(npages_vec))
            
 }
@@ -176,53 +147,15 @@ function(npages = 10,
                         stop(list(error=jsonlite::unbox(msg)))     
             }
             
-            
-            ## sanitize input 
-            tipo = tolower(type) %>% str_trim()
-            citta = tolower(city) %>% iconv(to='ASCII//TRANSLIT') %>%  str_trim()
-            
-            ## url composition reverse engineering NOT ELEGANT
-            if(!missing("macrozone")){
-                        macrozone = tolower(macrozone) %>% iconv(to='ASCII//TRANSLIT') %>%  str_trim()
-                        idzone = list()
-                        zone = fromJSON(here::here("ALLzone.json"))
-                        for(i in seq_along(macrozone)){
-                                    zone$name = zone$name %>%  tolower()
-                                    if(grepl(macrozone[i], zone)[2]){
-                                                pos = grepl(macrozone[i],zone$name, ignore.case = T)
-                                                idzone[i] = zone[pos,] %>%  select(id)
-                                    } else {
-                                                stop(paste0("zone:", macrozone[i], " is not recognized"))}
-                        }
-                        idzone = idzone %>%  unlist() %>%  unique()
-                        mzones =  glue::glue_collapse(x = idzone, "&idMZona[]=")
-                        
-                        dom = "https://www.immobiliare.it/"
-                        stringa = paste0(dom, tipo, "-case/", citta,"/?", mzones) 
-                        npages_vec = str_c(stringa, '&pag=', 2:npages) %>% 
-                                    append(stringa, after = 0) 
-                        
-            } else {
-                        dom = "https://www.immobiliare.it/"
-                        stringa = paste0(dom, tipo, "-case/", citta,"/") # mzones
-                        npages_vec = glue("{stringa}?pag={2:npages}") %>%
-                                    append(stringa, after = 0)  
-                        
-            }
-            
-            if(thesis){
-                        fix_url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069"
-                        npages_vec = glue("{fix_url}?pag={2:npages}") %>%
-                                    append(fix_url, after = 0)
-                        cat(npages_vec[2])
-            }
+            npages_vec = get_link(npages, city, macrozone, type)
             
             cat("Query url sent:",npages_vec[2],"\n")
-            ## get links 
+            ## get links
             links =  future_map(npages_vec, possibly( ~{
                         sesh = html_session(.x, user_agent(agent = agents[sample(1)]))
                         scrapehref_imm(session = sesh) },NA_character_, quiet = FALSE)) %>%  flatten_chr()
-            list(completescrape(links))
+            plan(multisession)
+            list(completescrape2(links))
             
 }
 
@@ -231,21 +164,34 @@ function(npages = 10,
 #* @param city [chr string] the city you are interested to extract data (lowercase without accent)
 #* @param npages [positive integer] number of pages to scrape default = 10, min  = 2, max = 300
 #* @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
-#* @get /get_data/<npages:int>/<city:chr>/<type:chr>
+#* @param thesis [boolean] TRUE for data used in thesis analysis
+#* @get /get_data/<npages:int>/<city:chr>/<type:chr>/<thesis:bool>
 function(npages = 10,
          city = "milano",
+         macrozone = c("fiera", "centro"),
          type = "affitto",
+         thesis = F,
+         append = TRUE,
          req,
          res){
             cat("\n\n port:" ,req$SERVER_PORT,
                 "\n server_name:",req$SERVER_NAME)
+            
             if (npages > 300 & npages > 0){
                         msg <- "npages must be between 1 and 1,000"
                         res$status <- 500 # Bad request
                         list(error=jsonlite::unbox(msg))
             }
+            npages_vec = get_link(npages, city, macrozone, type)
+            cat("Query url sent:",npages_vec[2],"\n")
+            
+            ## get links
+            links =  future_map(npages_vec, possibly( ~{
+                        sesh = html_session(.x, user_agent(agent = agents[sample(1)]))
+                        scrapehref_imm(session = sesh) },NA_character_, quiet = FALSE)) %>%  flatten_chr()
             
             list(
-                        get_data(npages, city, type)
+                        get_data(links)
             )
 }
+
