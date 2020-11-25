@@ -17,7 +17,6 @@ vec_libs = c("dplyr",
              "here", ## newlib
              "rvest",
              "tidyr",
-             "doFuture", ## newlib ----------------
              "httr",
              "robotstxt", ## newlib
              "parallel", ## newlib al posto di doParallel
