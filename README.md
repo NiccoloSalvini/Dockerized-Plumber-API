@@ -16,10 +16,10 @@ REST Parallel Scraping API for
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
 <a href="https://www.buymeacoffee.com/gbraad" target="_blank"><img src="img/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 [![Generic
-badge](https://img.shields.io/badge/API-down-red.svg)](https://shields.io/)
+badge](https://img.shields.io/badge/API-up-green.svg)](https://shields.io/)
 
 *author*: **[Niccolò Salvini](https://niccolosalvini.netlify.app/)**
-*date*: Last update: 24 novembre, 2020
+*date*: Last update: 25 novembre, 2020
 
 <br>
 
@@ -42,11 +42,11 @@ performance on the Linux server.
 
 **API URL**:
 
-`ec2-15-161-94-121.eu-south-1.compute.amazonaws.com`
+`15.161.14.100`
 
 **SWAGGER UI FOR OAS3**
 
-`ec2-15-161-94-121.eu-south-1.compute.amazonaws.com/__docs__/`
+`15.161.14.100/__docs__/`
 
 <p align="center">
 
@@ -148,13 +148,10 @@ log time big-O(log(n))
 
 ## Query API calls Examples:
 
-**on default localhost: 127.0.0.1 and port: 8000 (plumber default is
-9801)**
-
   - **/ fastscrape** : *city = “milan”, npages = 10, type = “affitto”,
     thesis = FALSE, macrozone = “fiera”, “centro”*
 
-`http://127.0.0.1:8000/fastscrape/10/milano/affitto/false?macrozone=fiera&macrozone=centro`
+`http://15.161.14.100/fastscrape/10/milano/affitto/false?macrozone=fiera&macrozone=centro`
 
     {
       "title": "Trilocale Parco delle Basiliche, Milano",
@@ -184,7 +181,7 @@ log time big-O(log(n))
   - **/ fastscrape** : *city = “firenze”, npages = 15, type = “vendita”,
     thesis = FALSE*
 
-`http://127.0.0.1:8000/fastscrape/15/firenze/vendita/false`
+`http://15.161.14.100/fastscrape/15/firenze/vendita/false`
 
     {
       "title": "Trilocale via Andrea del Sarto 65, Coverciano, Firenze",
@@ -214,7 +211,7 @@ log time big-O(log(n))
   - **/ completescrape** : *npages = 10, city = “milan”, type =
     “affitto”, .thesis = FALSE*
 
-`http://127.0.0.1:8000/complete/10/milano/affitto/false`
+`http://15.161.14.100/completescrape/10/milano/affitto/false`
 
     {
       "ID": "83286087",
