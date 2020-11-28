@@ -38,6 +38,7 @@ invisible(lapply(vec_libs, library, character.only = TRUE))
 ## 2.0 Source Helpers (UTILS), Scraping functions and logging (not yet)  ----
 ## utils helpers
 source(here::here("helpers.R"))
+source(here::here("agents.R"))
 sourceEntireFolder(here::here("scraping","functions_fastscrape"))
 sourceEntireFolder(here::here("scraping","functions_completescrape"))
 # ## append log info
