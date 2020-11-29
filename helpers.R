@@ -136,7 +136,7 @@ convert_empty <- function(string) {
 ## [get_link] ----
 ## reverse engineer the link 
 
-get_link = function(npages ,
+get_link = function(npages,
                     city,
                     macrozone,
                     type) {
@@ -145,24 +145,38 @@ get_link = function(npages ,
             tipo = tolower(type) %>% str_trim()
             citta = tolower(city) %>% iconv(to='ASCII//TRANSLIT') %>%  str_trim()
             
+            
             ## url composition reverse engineering NOT ELEGANT
+            ##  - errore in macrozone quando il niome della zone è uguale a quello di un 'altra
+            ## per esempio "centro" compare più volte, soluzione breve, JSON più nested
+            ## -  errore correggere se pagina generata è maggiore di pagina esistente 
             if(!missing("macrozone")){
                         macrozone = tolower(macrozone) %>% iconv(to='ASCII//TRANSLIT') %>%  str_trim()
                         idzone = list()
                         zone = fromJSON(here::here("ALLzone.json"))
                         for(i in seq_along(macrozone)){
                                     zone$name = zone$name %>%  tolower()
+                                    
                                     if(grepl(macrozone[i], zone)[2]){
+                                                
                                                 pos = grepl(macrozone[i],zone$name, ignore.case = T)
                                                 idzone[i] = zone[pos,] %>%  select(id)
+                                                
                                     } else {
                                                 stop(paste0("zone:", macrozone[i], " is not recognized"))}
                         }
                         idzone = idzone %>%  unlist() %>%  unique()
-                        mzones =  glue::glue_collapse(x = idzone, "&idMZona[]=")
+                        
+                        if (length(idzone)==1){
+                                    mzones = glue("&idMZona[]={idzone}")
+                        } else {
+                                    mzones =  glue::glue_collapse(x = idzone, "&idMZona[]=")    
+                                    }
+                        
                         
                         dom = "https://www.immobiliare.it/"
                         stringa = paste0(dom, tipo, "-case/", citta,"/?", mzones) 
+                        
                         if(is_url(stringa)){
                                     npages_vec = str_c(stringa, '&pag=', 2:npages) %>%
                                                 append(stringa, after = 0)
@@ -183,5 +197,23 @@ get_link = function(npages ,
             }
             return(npages_vec)
             
+            # get_final_href = read_html(npages_vec[1]) %>% 
+            #             html_node(css = ".pagination__number .disabled+ .disabled .disabled") %>%  
+            #             html_text() %>%  
+            #             as.integer()
+            # if_else(length(npages_vec) > get_final_href,stop("npages inputted is greater than the already existing ones"), return(npages_vec))
+
+            # if (length(npages_vec) > get_final_href) {
+            # 
+            #             return("npages inputted is greater than the already existing ones")
+            # } else {
+            # 
+            #             return(npages_vec)
+            # }
+
+            
+            
+            
 }
+
 

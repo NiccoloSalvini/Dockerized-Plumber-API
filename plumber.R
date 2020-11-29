@@ -49,6 +49,7 @@ sourceEntireFolder(here::here("scraping","functions_completescrape"))
 ## three endpoints 
 message("Sourcing endpoints functions...")
 source(here::here("scraping","_fastscrape.R"))
+source(here::here("scraping","_fastscrape2.R"))
 source(here::here("scraping","_completescrape.R"))
 source(here::here("scraping","_completescrape2.R"))
 ## .csv generator --> connected with MongoDB ATLAS          
@@ -86,12 +87,14 @@ function(req){
 #* @param npages [positive integer] default = 10, min  = 2, max = 300
 #* @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
 #* @param thesis [boolean] TRUE for data used in thesis analysis
+#* @param fixed_url [chr string] supply the target scraping url
 #* @get /fastscrape/<npages:int>/<city:chr>/<type:chr>/<thesis:bool>
 function(npages = 10,
          city = "milano",
-         macrozone = c("fiera", "centro"),
+         macrozone = c(NA_character_, NA_character_),
          type = "affitto",
          thesis = FALSE,
+         fixed_url = NULL,
          req,
          res){
             ## print port served and server name
@@ -114,13 +117,24 @@ function(npages = 10,
                         cat(npages_vec[2])
             }
             
+            if(!missing(fixed_url)){
+                        if (is_url(fixed_url)){
+                                    npages_vec = glue("{fixed_url}?pag={2:npages}") %>%
+                                                append(fixed_url, after = 0)
+                        }
+            }
+            
             cat("Query url sent:",npages_vec[2],"\n")
             dplyr::if_else(suppressMessages(paths_allowed(first(npages_vec))), "path is allowed", "path is not allowed according to robotxt")
             ## open parallel backend 
             plan(multisession) ## match availableCores() as default
-            list(fastscrape(npages_vec))
+            list(fastscrape2(npages_vec))
            
 }
+
+
+
+
 
 
 #* Get the complete set of covariates data from each single adv
