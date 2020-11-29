@@ -60,7 +60,7 @@ source(here::here("get_data.R"))
 
 #* @apiTitle immobiliare.it data
 #* @apiDescription GET real-time data from immobiliare.it Real Estate Rental market
-#* @apiVersion 2.0.0
+#* @apiVersion 2.1.0
 #* @apiLicense list(name = "Apache 2.0", url = "https://www.apache.org/licenses/LICENSE-2.0.html")
 
 
