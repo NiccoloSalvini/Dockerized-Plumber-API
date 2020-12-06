@@ -135,6 +135,13 @@ convert_empty <- function(string) {
 
 ## [get_link] ----
 ## reverse engineer the link 
+##  problemi conosciuti:
+##  - la zona centro corrisponde a più zone perchè presente in più citta
+##  - possibilità di selezionare più città insieme  più città insieme 
+##  - quanfdo numero di pagine maggiore di quello esistente allora dirlo
+##  ed adoperare tutto il numero di pagine possibile
+##  - possibilità selection microzone (scrappabili)
+##  - possibilità di selezionare ogni zona per città
 
 get_link = function(npages,
                     city,
@@ -145,13 +152,11 @@ get_link = function(npages,
             tipo = tolower(type) %>% str_trim()
             citta = tolower(city) %>% iconv(to='ASCII//TRANSLIT') %>%  str_trim()
             
-            
-            ## url composition reverse engineering NOT ELEGANT
-            ##  - errore in macrozone quando il niome della zone è uguale a quello di un 'altra
-            ## per esempio "centro" compare più volte, soluzione breve, JSON più nested
-            ## -  errore correggere se pagina generata è maggiore di pagina esistente 
+            ## macrozone selection
             if(!missing("macrozone")){
-                        macrozone = tolower(macrozone) %>% iconv(to='ASCII//TRANSLIT') %>%  str_trim()
+                        
+                        ## sanitize input
+                        macroozone = tolower(macrozone) %>% iconv(to='ASCII//TRANSLIT') %>%  str_trim()
                         idzone = list()
                         zone = fromJSON(here::here("ALLzone.json"))
                         for(i in seq_along(macrozone)){
@@ -165,20 +170,21 @@ get_link = function(npages,
                                     } else {
                                                 stop(paste0("zone:", macrozone[i], " is not recognized"))}
                         }
+                        
                         idzone = idzone %>%  unlist() %>%  unique()
                         
                         if (length(idzone)==1){
                                     mzones = glue("&idMZona[]={idzone}")
                         } else {
-                                    mzones =  glue::glue_collapse(x = idzone, "&idMZona[]=")    
+                                    mzones =  glue::glue_collapse(glue("&idMZona[]={idzone}"), "&idMZona[]=")    
                                     }
                         
                         
                         dom = "https://www.immobiliare.it/"
-                        stringa = paste0(dom, tipo, "-case/", citta,"/?", mzones) 
+                        stringa = paste0(dom, tipo, "-case/", citta,"/", "?criterio=rilevanza", mzones) 
                         
                         if(is_url(stringa)){
-                                    npages_vec = str_c(stringa, '&pag=', 2:npages) %>%
+                                    npages_vec = glue("{stringa}&pag={2:npages}") %>%
                                                 append(stringa, after = 0)
                         } else {
                                     stop("url imputted does not seem to be Real")
@@ -187,13 +193,14 @@ get_link = function(npages,
                         
             } else {
                         dom = "https://www.immobiliare.it/"
-                        stringa = paste0(dom, tipo, "-case/", citta,"/") # mzones
+                        stringa = paste0(dom, tipo, "-case/", citta,"/", "?criterio=rilevanza") # mzones
                         if (is_url(stringa)){
-                                    npages_vec = glue("{stringa}?pag={2:npages}") %>%
+                                    npages_vec = glue("{stringa}&pag={2:npages}") %>%
                                                 append(stringa, after = 0)  
                         } else {
                                     stop("url imputted does not seem to be Real")
                         }
+                        
             }
             return(npages_vec)
             
@@ -217,3 +224,8 @@ get_link = function(npages,
 }
 
 
+##  [FromNUllToNA]   -----
+##  coercing NULL to NA to bind result in tibbles
+FromNUllToNA = function(x) {
+            ifelse(is.null(x), NA, x)
+}

@@ -41,6 +41,7 @@ source(here::here("helpers.R"))
 source(here::here("agents.R"))
 sourceEntireFolder(here::here("scraping","functions_fastscrape"))
 sourceEntireFolder(here::here("scraping","functions_completescrape"))
+
 # ## append log info
 # log_dir = "logs"
 # if (!fs::dir_exists(log_dir)) fs::dir_create(log_dir)
@@ -52,6 +53,7 @@ source(here::here("scraping","_fastscrape.R"))
 source(here::here("scraping","_fastscrape2.R"))
 source(here::here("scraping","_completescrape.R"))
 source(here::here("scraping","_completescrape2.R"))
+source(here::here("scraping","_completescrape3.R"))
 ## .csv generator --> connected with MongoDB ATLAS          
 source(here::here("get_data.R"))
 
@@ -91,7 +93,7 @@ function(req){
 #* @get /fastscrape/<npages:int>/<city:chr>/<type:chr>/<thesis:bool>
 function(npages = 10,
          city = "milano",
-         macrozone = c(NA_character_, NA_character_),
+         macrozone = c("fiera", "city life"),
          type = "affitto",
          thesis = FALSE,
          fixed_url = NULL,
@@ -133,10 +135,6 @@ function(npages = 10,
 }
 
 
-
-
-
-
 #* Get the complete set of covariates data from each single adv
 #* @param city [chr string] the city you are interested to extract data (lowercase without accent)
 #* @param npages [positive integer] number of pages to scrape default = 10, min  = 2, max = 300
@@ -147,7 +145,7 @@ function(npages = 10,
          city = "milano",
          macrozone = c("fiera", "centro"),
          type = "affitto",
-         thesis = F,
+         thesis = FALSE,
          req,
          res){
             ## print port served and server name
@@ -162,6 +160,13 @@ function(npages = 10,
             }
             
             npages_vec = get_link(npages, city, macrozone, type)
+            
+            if(thesis){
+                        fix_url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069"
+                        npages_vec = glue("{fix_url}?pag={2:npages}") %>%
+                                    append(fix_url, after = 0)
+                        cat(npages_vec[2])
+            }
             
             cat("Query url sent:",npages_vec[2],"\n")
             ## get links
