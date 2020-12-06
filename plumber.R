@@ -128,9 +128,14 @@ function(npages = 10,
             
             cat("Query url sent:",npages_vec[2],"\n")
             dplyr::if_else(suppressMessages(paths_allowed(first(npages_vec))), "path is allowed", "path is not allowed according to robotxt")
+            
             ## open parallel backend 
-            plan(multisession) ## match availableCores() as default
+            
+            ## tries to differentiate on future::supportsMulticore()
+            ## orr with the .Platform$OS.type == "windows"
+            plan(multisession, workers = parallel::detectCores(logical = TRUE)) 
             list(fastscrape2(npages_vec))
+            plan(sequential)
            
 }
 
@@ -173,7 +178,8 @@ function(npages = 10,
             links =  future_map(npages_vec, possibly( ~{
                         sesh = html_session(.x, user_agent(agent = agents[sample(1)]))
                         scrapehref_imm(session = sesh) },NA_character_, quiet = FALSE)) %>%  flatten_chr()
-            plan(multisession)
+            
+            plan(multisession, workers = parallel::detectCores(logical = F))
             list(completescrape2(links))
             
 }

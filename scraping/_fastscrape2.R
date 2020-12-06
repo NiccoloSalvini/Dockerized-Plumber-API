@@ -2,11 +2,10 @@
 ## first endpoint function 
 options(future.rng.onMisuse="ignore")
 
-## posso renderla ancora più velcoe se cerco il JSON
+## make chunk  
 ## 
-## makechunk
-
-
+## prossimamente togliere l'obsoleteo
+## tidyjson che è ridicolo
 
 scraperjson = function(session) {
             result = session %>%
@@ -40,4 +39,3 @@ fastscrape2 = function(npages_vec){
                         #           idAgenzia = "idAgenzia")
                         # 
 }
-
