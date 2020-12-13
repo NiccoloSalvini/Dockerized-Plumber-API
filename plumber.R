@@ -62,7 +62,7 @@ source(here::here("get_data.R"))
 
 #* @apiTitle immobiliare.it data
 #* @apiDescription GET real-time data from immobiliare.it Real Estate Rental market
-#* @apiVersion 2.1.0
+#* @apiVersion 3.0.0
 #* @apiLicense list(name = "Apache 2.0", url = "https://www.apache.org/licenses/LICENSE-2.0.html")
 
 
@@ -133,6 +133,7 @@ function(npages = 10,
             
             ## tries to differentiate on future::supportsMulticore()
             ## orr with the .Platform$OS.type == "windows"
+            ## unix needs multicore for forking
             plan(multisession, workers = parallel::detectCores(logical = TRUE)) 
             list(fastscrape2(npages_vec))
             plan(sequential)
@@ -181,6 +182,7 @@ function(npages = 10,
             
             plan(multisession, workers = parallel::detectCores(logical = F))
             list(completescrape2(links))
+            plan(sequential)
             
 }
 

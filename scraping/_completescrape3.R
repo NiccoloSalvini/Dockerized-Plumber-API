@@ -70,7 +70,11 @@ completescrape3 = function(links){
             
             tic()
             result =future_map(links, possibly( ~{
-                                 prova =  sesh = html_session(.x, user_agent(agent = agents[sample(1)]))
+                                 prova =  sesh = html_session(.x, user_agent(agent = agents[sample(1)]),
+                                                              add_headers("e-mail" = fakemail(),
+                                                                          "project" = "https://github.com/NiccoloSalvini/Dockerized-Plumber-API",
+                                                                          "reassurance" = "I will not distribute neither publish any data I will exclusively
+                                                        use it for my thesis purposes."))
                                     if (class(sesh)=="session") {sesh = sesh$response}
                                     suppressMessages(completescrapeJSON(session = sesh))},NA_character_, quiet = FALSE))
             toc()

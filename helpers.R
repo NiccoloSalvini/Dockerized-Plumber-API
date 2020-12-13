@@ -17,9 +17,22 @@
 # 
 # 
 # 
-# # ## [ add_Headers ] ### ----
-# 
-# 
+# ## [ add_Headers ] ### ----
+# fake e-mial generator
+url = "https://it.emailfake.com/"
+fakemail = function(url = "https://it.emailfake.com/") {
+            mail = url %>%
+                        read_html() %>% 
+                        html_node(css = "#email_ch_text")  %>%
+                        html_text()
+            return(mail)
+                        
+            
+}
+mail = url %>% read_html() %>% 
+            html_node(css = "#email_ch_text")  %>%
+            html_text()
+
 # mails = c('heurtee@triderprez.cf',
 #           'nonliqui@famalsa.tk',
 #           'bemerker@vagenland.gq',
@@ -229,3 +242,12 @@ get_link = function(npages,
 FromNUllToNA = function(x) {
             ifelse(is.null(x), NA, x)
 }
+
+
+
+
+
+
+url %>% read_html() %>% 
+            html_node(css = "#email_ch_text")  %>% 
+            html_text()
