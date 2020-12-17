@@ -21,8 +21,8 @@ RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/doPar
 
 # setup nginx
 RUN apt-get update && \
-            apt-get install -y nginx apache2-utils && \
-            htpasswd -bc /etc/nginx/.htpasswd salvini salvini
+apt-get install -y nginx apache2-utils && \
+htpasswd -bc /etc/nginx/.htpasswd salvini salvini
 
 # add config file to dedicated folder
 ADD ./nginx.conf /etc/nginx/nginx.conf          
