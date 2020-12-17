@@ -43,4 +43,5 @@ fastscrape2 = function(npages_vec){
                         #           prezzo = "prezzo",
                         #           idAgenzia = "idAgenzia")
                         # 
+                        # 
 }

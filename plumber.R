@@ -96,7 +96,7 @@ function(npages = 10,
          macrozone = c("fiera", "city life"),
          type = "affitto",
          thesis = FALSE,
-         fixed_url = NULL,
+         fixed_url = NA_character_,
          req,
          res){
             ## print port served and server name
@@ -129,14 +129,14 @@ function(npages = 10,
             cat("Query url sent:",npages_vec[2],"\n")
             dplyr::if_else(suppressMessages(paths_allowed(first(npages_vec))), "path is allowed", "path is not allowed according to robotxt")
             
-            ## open parallel backend 
+            ## open parallel backend            
             
             ## tries to differentiate on future::supportsMulticore()
             ## orr with the .Platform$OS.type == "windows"
             ## unix needs multicore for forking
-            plan(multisession, workers = parallel::detectCores(logical = TRUE)) 
+            strategy = plan(multisession , workers = parallel::detectCores(logical = FALSE))
+            on.exit(plan(strategy))
             list(fastscrape2(npages_vec))
-            plan(sequential)
            
 }
 
@@ -180,9 +180,9 @@ function(npages = 10,
                         sesh = html_session(.x, user_agent(agent = agents[sample(1)]))
                         scrapehref_imm(session = sesh) },NA_character_, quiet = FALSE)) %>%  flatten_chr()
             
-            plan(multisession, workers = parallel::detectCores(logical = F))
+            strategy = plan(multisession , workers = parallel::detectCores(logical = FALSE))
+            on.exit(plan(strategy))
             list(completescrape2(links))
-            plan(sequential)
             
 }
 

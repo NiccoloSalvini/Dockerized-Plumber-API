@@ -97,7 +97,7 @@ foreach1 = ggplot(df_plot2_foreach, aes(x = 1:20, y = elapsed))+
             geom_smooth(method = "lm")+
             labs(x = "# of simulations",
                  y = "time elapsed (seconds)",
-                 title = "Run time Parallel scraping simulation with furrr+Future")+
+                 title = "Run time Parallel scraping simulation with foreach+doParallel")+
             scale_x_continuous(labels = label_ordinal(big.mark = " ", rules = ordinal_english()), n.breaks = 20)+ 
             scale_y_continuous(labels = label_number(suffix = "``"), n.breaks = 10)+ 
             theme_nicco()

@@ -75,13 +75,13 @@ knitr::include_graphics("img/SoftwareDevWF.jpg")
 simulation conducted on `foreach` with `doMC` parallel back end vs `furrr` (`future` and  `purrr` Tidy evaluation) on local machine Microsoft Windows 10 Home	with Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz, 2201 Mhz, 6 cores, 12 logical processors. On x axis the number of urls processed, on y axis run time:
 
 ```{r furrr, echo=FALSE, imgcenter = TRUE, fig.cap="linear time big-O(n)"}
-knitr::include_graphics("img/run_timefurrr.png") 
+knitr::include_graphics("img/final_furrr_future.png") 
 ```
 
 ```{r foreach, echo=FALSE, imgcenter = TRUE, fig.cap="log time  big-O(log(n))"}
-knitr::include_graphics("img/run_timeforeach.png") 
+knitr::include_graphics("img/final_foreach_dofuture_1&2.png") 
 ```
-
+ù
 
 ## API Docs:  
 

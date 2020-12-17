@@ -19,7 +19,7 @@ REST Parallel Scraping API for
 badge](https://img.shields.io/badge/API-up-green.svg)](https://shields.io/)
 
 *author*: **[Niccolò Salvini](https://niccolosalvini.netlify.app/)**
-*date*: Last update: 25 novembre, 2020
+*date*: Last update: 16 dicembre, 2020
 
 <br>
 
@@ -83,7 +83,7 @@ processed, on y axis run time:
 
 <div class="figure">
 
-<img src="img/run_timefurrr.png" alt="linear time big-O(n)" width="696" />
+<img src="img/final_furrr_future.png" alt="linear time big-O(n)" width="831" />
 
 <p class="caption">
 
@@ -99,7 +99,7 @@ linear time big-O(n)
 
 <div class="figure">
 
-<img src="img/run_timeforeach.png" alt="log time  big-O(log(n))" width="696" />
+<img src="img/final_foreach_dofuture_1&2.png" alt="log time  big-O(log(n))" width="831" />
 
 <p class="caption">
 
@@ -110,6 +110,8 @@ log time big-O(log(n))
 </div>
 
 </p>
+
+ù
 
 ## API Docs:
 
