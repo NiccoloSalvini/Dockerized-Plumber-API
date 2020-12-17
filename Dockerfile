@@ -30,6 +30,6 @@ ADD ./nginx.conf /etc/nginx/nginx.conf
 COPY / /
 
 # expose port
-EXPOSE 8000
+EXPOSE 80
 
 CMD service nginx start && R -e "source('main.R')"
