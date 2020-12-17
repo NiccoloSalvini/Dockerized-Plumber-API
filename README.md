@@ -1,9 +1,10 @@
-REST Parallel Scraping API for
+RESTful Parallel Scraping API for
 [Immobiliare.it](https://www.immobiliare.it/) data
 ================
 
   - [Intro](#intro)
   - [future improvements:](#future-improvements)
+  - [Parallel Benchmark](#parallel-benchmark)
   - [API Docs:](#api-docs)
   - [Query API calls Examples:](#query-api-calls-examples)
 
@@ -19,26 +20,24 @@ REST Parallel Scraping API for
 badge](https://img.shields.io/badge/API-up-green.svg)](https://shields.io/)
 
 *author*: **[Niccolò Salvini](https://niccolosalvini.netlify.app/)**
-*date*: Last update: 16 dicembre, 2020
+*date*: Last update: 17 dicembre, 2020
 
 <br>
 
-The following **REST API** provides a way to collect public
+The following **REST API** provides a way to kindly collect
 [Immobiliare.it](https://www.immobiliare.it/) data from Real Estate
 rental and selling market over a various range of cities. The API
 framework is R [**Plumber**](https://www.rplumber.io/) which calls
 **Parallelized** (multisession parallel back end)
 [`furrr`](https://www.tidyverse.org/blog/2020/10/furrr-0-2-0/)
-([`future`](https://github.com/HenrikBengtsson/future) + `purrr`)
-scraping functions. The idea is to mimic immobiliare url semantic and
-then calling scraping functions on the targeted url. The plumber
-endpoints are then containerized with **Docker** and hosted in a **AWS
-EC2** server. Parallelization has been tested under different angles
-(speed, resposive debugging, {tidyverse} familiarity). A further option
-might be `foreach` + `doMC` /(`doFuture`), which results in faster
-scraping in local, but it is has a worst debugging experience,
-unfamiliarity with the {tidyverse} stack, as well as displaying equal
-performance on the Linux server.
+([`Future`](https://github.com/HenrikBengtsson/future)) scraping
+functions. The idea is to reverse engineer
+[immobiliare.it](https://www.immobiliare.it/) url semantic and then
+calling scraping functions on the targeted url. Plumber API framework
+decors scraping function codes allowing to be a RESTful endpoint. Code
+is then containerized with **Docker** and hosted in a **AWS EC2**
+server. **NGINX** load balances and authorizes traffic which is secured
+with **SSL** certificates allowing HTTPS.
 
 **API URL**:
 
@@ -66,12 +65,12 @@ sf development
 
 ## future improvements:
 
-  - NGINX reverse proxy :chart\_with\_upwards\_trend:
-  - Docker compose with a scheduler evoking endpoints and daily storing
-    data :x:
-  - HTTPS protocols :chart\_with\_upwards\_trend:
+  - container orchestration with a scheduler ⏳
+  - Mongodb ATLAS cluster connection ⏳
 
 <br><br>
+
+## Parallel Benchmark
 
 simulation conducted on `foreach` with `doMC` parallel back end vs
 `furrr` (`future` and `purrr` Tidy evaluation) on local machine
@@ -81,17 +80,7 @@ processed, on y axis run time:
 
 <p align="center">
 
-<div class="figure">
-
-<img src="img/final_furrr_future.png" alt="linear time big-O(n)" width="831" />
-
-<p class="caption">
-
-linear time big-O(n)
-
-</p>
-
-</div>
+<img src="img/final_furrr_future.png" width="831" />
 
 </p>
 
@@ -99,11 +88,11 @@ linear time big-O(n)
 
 <div class="figure">
 
-<img src="img/final_foreach_dofuture_1&2.png" alt="log time  big-O(log(n))" width="831" />
+<img src="img/final_foreach_dofuture_1&2.png" alt="foreach + doFuture benchmark, errata corrige title" width="831" />
 
 <p class="caption">
 
-log time big-O(log(n))
+foreach + doFuture benchmark, errata corrige title
 
 </p>
 

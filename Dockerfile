@@ -24,17 +24,12 @@ RUN apt-get update && \
             apt-get install -y nginx apache2-utils && \
             htpasswd -bc /etc/nginx/.htpasswd salvini salvini
 
-# set up SSL certificates
-RUN openssl req -batch -x509 -nodes -days 365 -newkey rsa:2048 \
-        -keyout /etc/ssl/private/server.key \
-        -out /etc/ssl/private/server.crt
-
 # add config file to dedicated folder
-ADD ./nginx.conf /etc/nginx/nginx.conf
+ADD ./nginx.conf /etc/nginx/nginx.conf          
 
 COPY / /
 
 # expose port
-EXPOSE 80 443
+EXPOSE 80 
 
 CMD service nginx start && R -e "source('main.R')"

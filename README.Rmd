@@ -1,5 +1,5 @@
 ---
-title: "REST Parallel Scraping API for [Immobiliare.it](https://www.immobiliare.it/) data"
+title: "RESTful Parallel Scraping API for [Immobiliare.it](https://www.immobiliare.it/) data"
 output: 
   github_document:
     toc: TRUE
@@ -46,8 +46,8 @@ _date_: Last update: `r format(Sys.Date(), "%d %B, %Y")`
 <br> 
 
  
-The following **REST API** provides a way to collect public [Immobiliare.it](https://www.immobiliare.it/) data from Real Estate rental and selling market over a various range of cities.
-The API framework is R [**Plumber**](https://www.rplumber.io/) which calls **Parallelized**  (multisession parallel back end)  [`furrr`](https://www.tidyverse.org/blog/2020/10/furrr-0-2-0/) ([`future`](https://github.com/HenrikBengtsson/future) + `purrr`) scraping functions. The idea is to mimic immobiliare url semantic and then calling scraping functions on the targeted url. The plumber endpoints are then containerized with **Docker** and hosted in a **AWS EC2** server. Parallelization has been tested under different angles (speed, resposive debugging, {tidyverse} familiarity). A further option might be `foreach` + `doMC` /(`doFuture`), which results in faster scraping in local, but it is has a worst debugging experience, unfamiliarity with the {tidyverse} stack, as well as displaying equal performance on the Linux server.
+The following **REST API** provides a way to kindly collect [Immobiliare.it](https://www.immobiliare.it/) data from Real Estate rental and selling market over a various range of cities.
+The API framework is R [**Plumber**](https://www.rplumber.io/) which calls **Parallelized** (multisession parallel back end)  [`furrr`](https://www.tidyverse.org/blog/2020/10/furrr-0-2-0/) ([`Future`](https://github.com/HenrikBengtsson/future)) scraping functions. The idea is to reverse engineer [immobiliare.it](https://www.immobiliare.it/) url semantic and then calling scraping functions on the targeted url. Plumber API framework decors scraping function codes allowing to be a RESTful endpoint. Code is then containerized with **Docker** and hosted in a **AWS EC2** server. **NGINX** load balances and authorizes traffic which is secured with **SSL** certificates allowing HTTPS.
 
 **API URL**:
 
@@ -63,22 +63,21 @@ knitr::include_graphics("img/SoftwareDevWF.jpg")
 
 ## future improvements: 
 
-- NGINX reverse proxy :chart_with_upwards_trend:
-- Docker compose with a scheduler evoking endpoints and daily storing data :x:
-- HTTPS protocols  :chart_with_upwards_trend:
 
-
+- container orchestration with a scheduler `r emo::ji("time")`
+- Mongodb ATLAS cluster connection `r emo::ji("time")`
 
 <br><br>
 
+## Parallel Benchmark
 
 simulation conducted on `foreach` with `doMC` parallel back end vs `furrr` (`future` and  `purrr` Tidy evaluation) on local machine Microsoft Windows 10 Home	with Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz, 2201 Mhz, 6 cores, 12 logical processors. On x axis the number of urls processed, on y axis run time:
 
-```{r furrr, echo=FALSE, imgcenter = TRUE, fig.cap="linear time big-O(n)"}
+```{r furrr, echo=FALSE, imgcenter = TRUE}
 knitr::include_graphics("img/final_furrr_future.png") 
 ```
 
-```{r foreach, echo=FALSE, imgcenter = TRUE, fig.cap="log time  big-O(log(n))"}
+```{r foreach, echo=FALSE, imgcenter = TRUE, fig.cap="foreach + doFuture benchmark, errata corrige title"}
 knitr::include_graphics("img/final_foreach_dofuture_1&2.png") 
 ```
 ù
