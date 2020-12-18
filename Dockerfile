@@ -18,15 +18,6 @@ RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/forea
 # install DoParallel from source since not avail in 4.0.2
 RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/doParallel/doParallel_1.0.14.tar.gz', repos=NULL, type='source')"
 
-
-# setup nginx
-RUN apt-get update && \
-apt-get install -y nginx apache2-utils && \
-htpasswd -bc /etc/nginx/.htpasswd test test
-
-# add config file to dedicated folder
-ADD ./nginx.conf /etc/nginx/nginx.conf          
-
 COPY / /
 
 # expose port
