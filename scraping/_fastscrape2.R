@@ -26,7 +26,7 @@ fastscrape2 = function(npages_vec){
             result =  future_map(npages_vec, possibly( ~{
                         sesh = html_session(.x, 
                                             user_agent(agent = agents[sample(1)]),
-                                            add_headers("e-mail" = fakemail(),
+                                            add_headers("From" = fakemail(),
                                                         "project" = "https://github.com/NiccoloSalvini/Dockerized-Plumber-API",
                                                         "reassurance" = "I will not distribute neither publish any data I will exclusively
                                                         use it for my thesis purposes."))

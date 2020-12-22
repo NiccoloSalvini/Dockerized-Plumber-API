@@ -71,7 +71,7 @@ completescrape3 = function(links){
             tic()
             result =future_map(links, possibly( ~{
                                  prova =  sesh = html_session(.x, user_agent(agent = agents[sample(1)]),
-                                                              add_headers("e-mail" = fakemail(),
+                                                              add_headers("From" = fakemail(),
                                                                           "project" = "https://github.com/NiccoloSalvini/Dockerized-Plumber-API",
                                                                           "reassurance" = "I will not distribute neither publish any data I will exclusively
                                                         use it for my thesis purposes."))

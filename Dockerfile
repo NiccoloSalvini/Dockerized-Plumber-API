@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
     libudunits2-dev
 
 # install R packages
-RUN R -e "install.packages(c('magrittr','lubridate', 'plumber', 'rvest', 'stringi', 'jsonlite', 'here', 'purrr', 'mongolite', 'tictoc', 'future', 'here', 'parallel', 'furrr','glue', 'robotstxt' ), dependencies = TRUE)"
+RUN R -e "install.packages(c('plumber', 'stringi', 'here', 'mongolite', 'tictoc', 'future', 'doFuture', 'parallel', 'furrr', 'robotstxt' ), dependencies = TRUE)"
 
 # install 'iterators' dep for DoParallel
 RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/iterators/iterators_1.0.10.tar.gz', repos=NULL, type='source')"
