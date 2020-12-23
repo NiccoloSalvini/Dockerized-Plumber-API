@@ -83,6 +83,8 @@ function(req){
             plumber::forward()
 }
 
+workers = future::availableCores()
+future::plan(multisession, workers = workers)
 
 #* Get FAST data (6 predictors: title, price, num of rooms, sqmeter, primarykey )
 #* @param city [chr string] the city you are interested to extract data (lowercase without accent)
@@ -134,10 +136,8 @@ function(npages = 10,
             ## tries to differentiate on future::supportsMulticore()
             ## orr with the .Platform$OS.type == "windows"
             ## unix needs multicore for forking
-            strategy = plan(multisession , workers = parallel::detectCores(logical = FALSE))
-            on.exit(plan(strategy))
             list(fastscrape2(npages_vec))
-           
+            # plan(sequential)
 }
 
 
@@ -166,7 +166,7 @@ function(npages = 10,
             }
             
             npages_vec = get_link(npages, city, macrozone, type)
-            
+                        
             if(thesis){
                         fix_url = "https://www.immobiliare.it/affitto-case/milano/?criterio=rilevanza&localiMinimo=1&localiMassimo=5&idMZona[]=10046&idMZona[]=10047&idMZona[]=10053&idMZona[]=10054&idMZona[]=10057&idMZona[]=10059&idMZona[]=10050&idMZona[]=10049&idMZona[]=10056&idMZona[]=10055&idMZona[]=10061&idMZona[]=10060&idMZona[]=10070&idMZona[]=10318&idMZona[]=10296&idMZona[]=10069"
                         npages_vec = glue("{fix_url}?pag={2:npages}") %>%
@@ -180,10 +180,9 @@ function(npages = 10,
                         sesh = html_session(.x, user_agent(agent = agents[sample(1)]))
                         scrapehref_imm(session = sesh) },NA_character_, quiet = FALSE)) %>%  flatten_chr()
             
-            strategy = plan(multisession , workers = parallel::detectCores(logical = FALSE))
-            on.exit(plan(sequential))
-            list(completescrape2(links))
             
+            list(completescrape3(links))
+            # plan(sequential)
 }
 
 
@@ -222,3 +221,8 @@ function(npages = 10,
             )
 }
 
+
+
+## close parallel back end
+## 
+# future::plan(sequential)

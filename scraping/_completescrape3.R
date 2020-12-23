@@ -69,8 +69,8 @@ completescrapeJSON = function(session_response) {
 completescrape3 = function(links){
             
             tic()
-            result =future_map(links, possibly( ~{
-                                 prova =  sesh = html_session(.x, user_agent(agent = agents[sample(1)]),
+            result = future_map(links, possibly( ~{
+                                 sesh = html_session(.x, user_agent(agent = agents[sample(1)]),
                                                               add_headers("From" = fakemail(),
                                                                           "project" = "https://github.com/NiccoloSalvini/Dockerized-Plumber-API",
                                                                           "reassurance" = "I will not distribute neither publish any data I will exclusively
@@ -82,6 +82,7 @@ completescrape3 = function(links){
             
 }
 
+######################################################################
 ######################################################################
 ######################################################################
 ######################################################################
