@@ -181,7 +181,7 @@ function(npages = 10,
                         scrapehref_imm(session = sesh) },NA_character_, quiet = FALSE)) %>%  flatten_chr()
             
             strategy = plan(multisession , workers = parallel::detectCores(logical = FALSE))
-            on.exit(plan(strategy))
+            on.exit(plan(sequential))
             list(completescrape2(links))
             
 }
