@@ -1,12 +1,16 @@
 ## entrypoint ----
 library(plumber)
-r = plumber::plumb(here::here("plumber.R"))
-r$run(port=8000, host="0.0.0.0")
+pr = plumber::plumb("plumber.R")
+# pr$swaggerFile()
+
+# jsonlite::toJSON(pr$getApiSpec(), auto_unbox = TRUE, pretty = TRUE)
+
+pr$run(port=8000, host="0.0.0.0")
 
 
 
 # 
-# ## try with logs ----
+# ## try with logs ---
 # library(plumber)
 # 
 # # Config
@@ -25,7 +29,7 @@ r$run(port=8000, host="0.0.0.0")
 #             if (string == "") {
 #                         "-"
 #             } else {
-#                         string
+#                         string    
 #             }
 # }
 # 
@@ -46,3 +50,4 @@ r$run(port=8000, host="0.0.0.0")
 #             )
 # )
 # pr
+

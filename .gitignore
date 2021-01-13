@@ -1,5 +1,8 @@
+# do not track these files:
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-keys.pem
+/simulations/furrr+future_foreach+doparallel.R
+img/
+README.Rmd

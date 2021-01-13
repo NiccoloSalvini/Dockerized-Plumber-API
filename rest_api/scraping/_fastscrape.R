@@ -30,7 +30,7 @@ fastscrape = function(npages_vec){
                         sqmeter =  future_map(npages_vec, possibly( ~{
                                     sesh = html_session(.x, user_agent(agent = agents[sample(1)]))
                                     if(sesh$response$status_code==200){invisible()}else{stop(glue("status code: {sesh$response$status_code}"))}
-                                    scrapespace_imm(session = sesh) },NA_character_, quiet = FALSE)),
+                                    scrapespace_imm(session = sesh) },NA_character_, quiet = FALSE)) %>% flatten_chr(),
                         
                         href =  future_map(npages_vec, possibly( ~{
                                     sesh = html_session(.x, user_agent(agent = agents[sample(1)]))

@@ -1,0 +1,31 @@
+
+FROM rocker/tidyverse:latest
+
+## thanks timosch29
+MAINTAINER Niccolo Salvini "niccolo.salvini27@gmail.com"
+ 
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    libxml2-dev \
+    libudunits2-dev \
+    cron 
+
+# install R packages
+RUN R -e "install.packages(c('plumber', 'rvest' , 'janitor' , 'stringi', 'here', 'tictoc', 'future', 'here', 'parallel', 'furrr', 'robotstxt' ), dependencies = TRUE)"
+	
+# make dir
+RUN mkdir -p /job/shared_data
+
+# copy folder which contains cronfile and RScrips
+COPY /job    /job  
+COPY /rest_api/scraping   /scraping
+WORKDIR /job
+
+# make all app files readable, gives rwe permisssion (solves issue when dev in Windows, but building in Ubuntu)
+RUN chmod -R 755 /job
+
+# Run cron job
+RUN crontab /job/cronjob
+
+# Run the command on container startup with extra touch as https://stackoverflow.com/questions/43802109/output-of-tail-f-at-the-end-of-a-docker-cmd-is-not-showing/43807880#43807880. Otherwise if seperate RUN touch recipe layer the output does not get appenended.
+CMD echo "cronjob gets started" && (cron) && echo "now touch n' tail" && touch /var/log/cron.log && tail -f /var/log/cron.log

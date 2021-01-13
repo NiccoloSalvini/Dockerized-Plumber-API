@@ -171,7 +171,7 @@ get_link = function(npages,
                         ## sanitize input
                         macroozone = tolower(macrozone) %>% iconv(to='ASCII//TRANSLIT') %>%  str_trim()
                         idzone = list()
-                        zone = fromJSON(here::here("ALLzone.json"))
+                        zone = fromJSON("ALLzone.json")
                         for(i in seq_along(macrozone)){
                                     zone$name = zone$name %>%  tolower()
                                     

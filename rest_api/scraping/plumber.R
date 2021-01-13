@@ -9,38 +9,67 @@
 
 ## 1.0 load the LIBRARIES needed minus the plumber (in main.R) ----
 
-vec_libs = c("dplyr",
-             "tibble",
-             "magrittr",
-             "tictoc", ## newlib
-             "future", ## newlib
-             "here", ## newlib
-             "rvest",
-             "tidyr",
-             "httr",
-             "robotstxt", ## newlib
-             "parallel", ## newlib al posto di doParallel
-             "stringi",
-             "furrr", ## new lib
-             "lubridate",
-             "jsonlite",
-             "doParallel",
-             "stringr",
-             "glue",  ## newlib
-             "purrr",
-             "mongolite")
+# vec_libs = c("tidyverse",
+#              "rvest",
+#              "tictoc", 
+#              "future", 
+#              "here",
+#              "robotstxt", 
+#              "parallel",  
+#              "stringi",
+#              "furrr",
+#              "glue",
+#              "jsonlite",
+#              "lubridate",
+#              "httr",
+#              "magrittr",
+#              "tibble"
+#              )
+# 
+# 
+# 
+# ## Loading Packages
+# message("Loading Packages...")
+# suppressMessages(invisible(lapply(vec_libs, library, character.only = TRUE)))
 
+library(tidyverse, warn.conflicts = F) 
+library(rvest, warn.conflicts = F) 
+library(tictoc, warn.conflicts = F) 
+library(future, warn.conflicts = F) 
+library(here, warn.conflicts = F) 
+library(stringi, warn.conflicts = F) 
+library(tidyjson, warn.conflicts = F) 
+library(furrr, warn.conflicts = F) 
+library(glue, warn.conflicts = F) 
+library(jsonlite, warn.conflicts = F) 
+library(httr, warn.conflicts = F) 
+library(magrittr, warn.conflicts = F) 
+library(robotstxt, warn.conflicts = F)
+library(tibble, warn.conflicts = F) 
 
-## Loading Packages
-message("Loading Packages...")
-invisible(lapply(vec_libs, library, character.only = TRUE))
+#              
+# "dplyr", # tidyverse --           
+# "tibble", # tidyverse 
+# "magrittr", # tidyverse 
+# "rvest",# tidyverse 
+# "tidyr",# tidyverse --- 
+# "httr",# tidyverse
+# "lubridate",# tidyverse 
+# "jsonlite",# tidyverse 
+# "stringr",# tidyverse ---
+# "glue",# tidyverse
+# "purrr"# tidyverse) ---
+# 
+# ## Loading Packages
+# message("Loading Packages...")
+# suppressMessages(invisible(lapply(vec_libs, library, character.only = TRUE)))
 
 ## 2.0 Source Helpers (UTILS), Scraping functions and logging (not yet)  ----
 ## utils helpers
-source(here::here("helpers.R"))
-source(here::here("agents.R"))
-sourceEntireFolder(here::here("scraping","functions_fastscrape"))
-sourceEntireFolder(here::here("scraping","functions_completescrape"))
+source("helpers.R")
+source("agents.R")
+sourceEntireFolder("functions_fastscrape")
+sourceEntireFolder("functions_completescrape")
 
 # ## append log info
 # log_dir = "logs"
@@ -49,13 +78,14 @@ sourceEntireFolder(here::here("scraping","functions_completescrape"))
 
 ## three endpoints 
 message("Sourcing endpoints functions...")
-source(here::here("scraping","_fastscrape.R"))
-source(here::here("scraping","_fastscrape2.R"))
-source(here::here("scraping","_completescrape.R"))
-source(here::here("scraping","_completescrape2.R"))
-source(here::here("scraping","_completescrape3.R"))
+# source(here::here("rest_api","scraping","_fastscrape.R"))
+# source("_fastscrape2.R")
+source("_fastscrape2.R")
+# source("rest_api","scraping","_completescrape.R")
+# source(("rest_api","scraping","_completescrape2.R")
+source("_completescrape3.R")
 ## .csv generator --> connected with MongoDB ATLAS          
-source(here::here("get_data.R"))
+# source(here::here("shared_data","get_data.R"))
 
 ## 3.0 REST API ENDPOINT  ----
 # define APIs endpoints
@@ -66,24 +96,26 @@ source(here::here("get_data.R"))
 #* @apiLicense list(name = "Apache 2.0", url = "https://www.apache.org/licenses/LICENSE-2.0.html")
 
 
-#* Log information
-#* @filter logger
-function(req){
-            cat(as.character(Sys.time()), "-",
-                req$HTTP_USER_AGENT, "@", req$REMOTE_ADDR, "\n")
-            plumber::forward()
-}
 
-#* User
-#* @filter setuser
-function(req){
-            user = req$cookies$user
-            # Make req$username available to endpoints
-            req$username = user
-            plumber::forward()
-}
+# 
+# #* Log information
+# #* @filter logger
+# function(req){
+#             cat(as.character(Sys.time()), "-",
+#                 req$HTTP_USER_AGENT, "@", req$REMOTE_ADDR, "\n")
+#             plumber::forward()
+# }
+# # 
+# #* User
+# #* @filter setuser
+# function(req){
+#             user = req$cookies$user
+#             # Make req$username available to endpoints
+#             req$username = user
+#             plumber::forward()
+# }
 
-workers = future::availableCores()
+workers = availableCores()
 future::plan(multisession, workers = workers)
 
 #* Get FAST data (6 predictors: title, price, num of rooms, sqmeter, primarykey )
@@ -129,11 +161,11 @@ function(npages = 10,
             }
             
             cat("Query url sent:",npages_vec[2],"\n")
-            dplyr::if_else(suppressMessages(paths_allowed(first(npages_vec))), "path is allowed", "path is not allowed according to robotxt")
+            dplyr::if_else(paths_allowed(first(npages_vec)), "path is allowed", "path is not allowed according to robotxt")
             
             ## open parallel backend            
             
-            ## tries to differentiate on future::supportsMulticore()
+            ## tries to differentiate on future::lticore()
             ## orr with the .Platform$OS.type == "windows"
             ## unix needs multicore for forking
             list(fastscrape2(npages_vec))
@@ -186,43 +218,61 @@ function(npages = 10,
 }
 
 
-#* Store data.csv in shared directory
-#* @param city [chr string] the city you are interested to extract data (lowercase without accent)
-#* @param npages [positive integer] number of pages to scrape default = 10, min  = 2, max = 300
-#* @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
-#* @param thesis [boolean] TRUE for data used in thesis analysis
-#* @get /get_data/<npages:int>/<city:chr>/<type:chr>/<thesis:bool>
-function(npages = 10,
-         city = "milano",
-         macrozone = c("fiera", "centro"),
-         type = "affitto",
-         thesis = F,
-         append = TRUE,
-         req,
-         res){
-            cat("\n\n port:" ,req$SERVER_PORT,
-                "\n server_name:",req$SERVER_NAME)
-            
-            if (npages > 300 & npages > 0){
-                        msg <- "npages must be between 1 and 1,000"
-                        res$status <- 500 # Bad request
-                        list(error=jsonlite::unbox(msg))
-            }
-            npages_vec = get_link(npages, city, macrozone, type)
-            cat("Query url sent:",npages_vec[2],"\n")
-            
-            ## get links
-            links =  future_map(npages_vec, possibly( ~{
-                        sesh = html_session(.x, user_agent(agent = agents[sample(1)]))
-                        scrapehref_imm(session = sesh) },NA_character_, quiet = FALSE)) %>%  flatten_chr()
-            
-            list(
-                        get_data(links)
-            )
-}
 
 
+# #* @plumber
+# function(pr) {
+#             pr %>%
+#                         pr_hook("postroute", function(req, value) { 
+#                                     str(list(
+#                                                 type = req$REQUEST_METHOD,
+#                                                 path = req$PATH_INFO, 
+#                                                 value = value
+#                                     ))
+#                                     # pass value through
+#                                     value
+#                         })
+# }
 
-## close parallel back end
-## 
-# future::plan(sequential)
+
+# 
+# #* Store data.csv in shared directory
+# #* @param city [chr string] the city you are interested to extract data (lowercase without accent)
+# #* @param npages [positive integer] number of pages to scrape default = 10, min  = 2, max = 300
+# #* @param type [chr string] affitto = rents, vendita  = sell (vendita no available for now)
+# #* @param thesis [boolean] TRUE for data used in thesis analysis
+# #* @get /get_data/<npages:int>/<city:chr>/<type:chr>/<thesis:bool>
+# function(npages = 10,
+#          city = "milano",
+#          macrozone = c("fiera", "centro"),
+#          type = "affitto",
+#          thesis = F,
+#          append = TRUE,
+#          req,
+#          res){
+#             cat("\n\n port:" ,req$SERVER_PORT,
+#                 "\n server_name:",req$SERVER_NAME)
+#             
+#             if (npages > 300 & npages > 0){
+#                         msg <- "npages must be between 1 and 1,000"
+#                         res$status <- 500 # Bad request
+#                         list(error=jsonlite::unbox(msg))
+#             }
+#             npages_vec = get_link(npages, city, macrozone, type)
+#             cat("Query url sent:",npages_vec[2],"\n")
+#             
+#             ## get links
+#             links =  future_map(npages_vec, possibly( ~{
+#                         sesh = html_session(.x, user_agent(agent = agents[sample(1)]))
+#                         scrapehref_imm(session = sesh) },NA_character_, quiet = FALSE)) %>%  flatten_chr()
+#             
+#             list(
+#                         get_data(links)
+#             )
+# }
+# 
+# 
+# 
+# ## close parallel back end
+# ## 
+# # future::plan(sequential)
