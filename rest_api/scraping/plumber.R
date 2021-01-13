@@ -90,9 +90,9 @@ source("_completescrape3.R")
 ## 3.0 REST API ENDPOINT  ----
 # define APIs endpoints
 
-#* @apiTitle immobiliare.it data
-#* @apiDescription GET real-time data from immobiliare.it Real Estate Rental market
-#* @apiVersion 3.0.0
+#* @apiTitle RESTful Parallel Scraping immobiliare.it API
+#* @apiDescription Extract real-time data from immobiliare.it
+#* @apiVersion 4.0.0
 #* @apiLicense list(name = "Apache 2.0", url = "https://www.apache.org/licenses/LICENSE-2.0.html")
 
 
