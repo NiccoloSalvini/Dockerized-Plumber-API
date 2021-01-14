@@ -17,29 +17,34 @@ RESTful Parallel Scraping API for
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
 <a href="https://www.buymeacoffee.com/gbraad" target="_blank"><img src="img/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 [![Generic
-badge](https://img.shields.io/badge/API-up-green.svg)](https://shields.io/)
+badge](https://img.shields.io/badge/API-down-red.svg)](https://shields.io/)
 
 *author*: **[Niccolò Salvini](https://niccolosalvini.netlify.app/)**
-*date*: Last update: 17 dicembre, 2020
+*date*: Last update: 14 gennaio, 2021
 
 <br>
 
-The following **REST API** provides a way to kindly collect
+The following opne **REST API** provides a way to *kindly* collect
 [Immobiliare.it](https://www.immobiliare.it/) data from Real Estate
 rental and selling market over a various range of cities. The API
 framework is R [**Plumber**](https://www.rplumber.io/) which calls
-**Parallelized** (multisession parallel back end)
-[`furrr`](https://www.tidyverse.org/blog/2020/10/furrr-0-2-0/)
-([`Future`](https://github.com/HenrikBengtsson/future)) scraping
-functions. The idea is to reverse engineer
+**Parallelized** (multisession parallel back end with `{future}`
++`{furrr}`) scraping functions. The idea is to reverse engineer
 [immobiliare.it](https://www.immobiliare.it/) url semantic and then
-calling scraping functions on the targeted url. Plumber API framework
-decors scraping function codes allowing to be a RESTful endpoint. Code
-is then containerized with **Docker** and hosted in a **AWS EC2**
-server. **NGINX** load balances and authorizes traffic which is secured
-with **SSL** certificates allowing HTTPS.
+calling scraping functions on the targeted url. The API supprots both
+client and server side necessities. The former can be sure to send
+considerably fast requests to immobiliare.it server, as well as be
+comfortable of not getting rejected with rotation of User Agents and
+“Fail Dealers” like `possibly()`. The latter can rely on calibrated
+delayed request rates based on `{robotstxt}` requirements. Plumber API
+framework decors scraping codes allowing to make it endpoints and
+passing functional arguements as API arguments. Code is then
+containerzied through *Docker* and orchestarted with *Compose*. The
+service load balances requests and grants secure access with **NGINX**
+reverse proxy server. Then the software environment is hosted into EC2
+AWS free tier Ubuntu Machine.
 
-**API URL**:
+**API Address**:
 
 `15.161.14.100`
 
@@ -65,8 +70,8 @@ sf development
 
 ## future improvements:
 
-  - container orchestration with a scheduler ⏳
-  - Mongodb ATLAS cluster connection ⏳
+  - container orchestration with a scheduler 💹
+  - Mongodb ATLAS cluster connection ❌
 
 <br><br>
 
