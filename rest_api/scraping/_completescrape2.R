@@ -38,10 +38,10 @@ completescrape2 = function(links){
                                     if (class(sesh)=="session") {sesh = sesh$response}
                                     scrapeagebuild.imm(session = sesh) },NA_character_, quiet = FALSE)),
                         
-                        floor =  future_map(links, possibly( ~{
-                                    sesh = html_session(.x, user_agent(agent = agents[sample(1)]))
-                                    if (class(sesh)=="session") {sesh = sesh$response}
-                                    scrapefloor.imm(session = sesh) },NA_character_, quiet = FALSE)),
+                        # floor =  future_map(links, possibly( ~{
+                        #             sesh = html_session(.x, user_agent(agent = agents[sample(1)]))
+                        #             if (class(sesh)=="session") {sesh = sesh$response}
+                        #             scrapefloor.imm(session = sesh) },NA_character_, quiet = FALSE)),
                         
                         indivsapt =  future_map(links, possibly( ~{
                                     sesh = html_session(.x, user_agent(agent = agents[sample(1)]))
@@ -73,10 +73,10 @@ completescrape2 = function(links){
                                     if (class(sesh)=="session") {sesh = sesh$response}
                                     scrapeaircondit.imm(session = sesh) },NA_character_, quiet = FALSE)),
 
-                        date =  future_map(links, possibly( ~{
-                                    sesh = html_session(.x, user_agent(agent = agents[sample(1)]))
-                                    if (class(sesh)=="session") {sesh = sesh$response}
-                                    scrapeaddate.imm(session = sesh) },NA_character_, quiet = FALSE)),
+                        # date =  future_map(links, possibly( ~{
+                        #             sesh = html_session(.x, user_agent(agent = agents[sample(1)]))
+                        #             if (class(sesh)=="session") {sesh = sesh$response}
+                        #             scrapeaddate.imm(session = sesh) },NA_character_, quiet = FALSE)),
 
                         catastinfo =  future_map(links, possibly(~{
                                     sesh = html_session(.x, user_agent(agent = agents[sample(1)]))
@@ -167,9 +167,9 @@ completescrape2 = function(links){
             )
             
             toc()
-            return(result %>%  unnest(cols = c(id, lat, long, location, condom, buildage, floor, indivsapt, 
-                                               locali, tpprop, status, heating, ac, date, catastinfo, aptchar, 
+            return(result %>%  unnest(cols = c(id, lat, long, location, condom, buildage, indivsapt, 
+                                               locali, tpprop, status, heating, ac, catastinfo, aptchar, 
                                                photosnum, age, enclass, contr, disp, totpiani, postauto, 
-                                               review, metrat, multi, lowprice, nrooms, price, sqfeet, title))) 
+                                               review, metrat, multi, lowprice, nrooms, price, sqfeet, title))) ##floor ,date
             
 }

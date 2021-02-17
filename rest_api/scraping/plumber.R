@@ -84,6 +84,7 @@ source("_fastscrape2.R")
 # source("rest_api","scraping","_completescrape.R")
 # source(("rest_api","scraping","_completescrape2.R")
 source("_completescrape3.R")
+source("_completescrape2.R")
 ## .csv generator --> connected with MongoDB ATLAS          
 # source(here::here("shared_data","get_data.R"))
 
@@ -184,6 +185,7 @@ function(npages = 10,
          macrozone = c("fiera", "centro"),
          type = "affitto",
          thesis = FALSE,
+         fixed_url = NA_character_,
          req,
          res){
             ## print port served and server name
@@ -206,6 +208,13 @@ function(npages = 10,
                         cat(npages_vec[2])
             }
             
+            if(!missing(fixed_url)){
+                        if (is_url(fixed_url)){
+                                    npages_vec = glue("{fixed_url}?pag={2:npages}") %>%
+                                                append(fixed_url, after = 0)
+                        }
+            }
+            
             cat("Query url sent:",npages_vec[2],"\n")
             ## get links
             links =  future_map(npages_vec, possibly( ~{
@@ -213,7 +222,7 @@ function(npages = 10,
                         scrapehref_imm(session = sesh) },NA_character_, quiet = FALSE)) %>%  flatten_chr()
             
             
-            list(completescrape3(links))
+            list(completescrape2(links))
             # plan(sequential)
 }
 
