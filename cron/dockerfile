@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     cron 
 
 # install R packages
-RUN R -e "install.packages(c('plumber', 'rvest' , 'janitor' , 'stringi', 'here', 'tictoc', 'future', 'here', 'parallel', 'furrr', 'robotstxt' ), dependencies = TRUE)"
+RUN R -e "install.packages(c('plumber', 'rvest' , 'janitor' , 'stringi', 'here', 'tictoc', 'future', 'here', 'parallel', 'furrr', 'robotstxt', 'dbplyr', 'DBI', 'RPostgres' ), dependencies = TRUE)"
 	
 # make dir
 RUN mkdir -p /job/shared_data

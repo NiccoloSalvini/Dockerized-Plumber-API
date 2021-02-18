@@ -9,7 +9,8 @@
 
 ## 1.0 load the LIBRARIES needed minus the plumber (in main.R) ----
 
-vec_libs = c("tidyverse",
+vec_libs = c(
+            "tidyverse",
              "rvest",
              "tictoc", 
              "future", 
@@ -24,32 +25,46 @@ vec_libs = c("tidyverse",
              "httr",
              "rvest",
              "magrittr",
-             "tibble"
+             "tibble",
+             "DBI", 
+             "dbplyr",
+             "RPostgres"
 )
 
 
 ## Loading Packages
-message("Loading Packages for crojob executable...")
+message("Loading Packages for crojob task...")
 invisible(lapply(vec_libs, library, character.only = TRUE))
-
-
-##  check if shared directory, file and last_update date exists
-print("Shared directory exists:")
-print(file.exists("/job/shared_data/"))
 
 ## source the function endpoint coming from scraping shared volume 
 ## source get_link
 ## source rotating agents
+print("Loading endpoint functions to complete task...")
 source("_fastscrape2.R")
 source("helpers.R")
 source("agents.R")
-
-## --> GESTIRE LE CONNESSIONI ALL'ISTANZA (mettile private)
 
 ## Parallel ----
 ## parallel workers initialized
 workers = future::availableCores()
 future::plan(multisession, workers = workers)
+
+
+## 2.0 Postegres Connection
+## estalish a connection with the DB
+
+dbConnect(
+            
+            drv = Postgres(),
+            host = "localhost",
+            port = 5432, 
+            user = Sys.getenv("POSTGRES_USER"),
+            password = Sys.getenv("POSTGRES_PASSWORD"),
+            dbname = Sys.getenv("POSTGRES_DB")
+)
+
+## get_data
+## extracts (daily data) from the same city
 
 get_data = function(){
             npages_vec = get_link(npages = 10, 
