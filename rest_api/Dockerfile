@@ -18,6 +18,6 @@ WORKDIR /scraping
 RUN chmod -R 755 /scraping
 
 # expose port
-EXPOSE 8000
+EXPOSE "8000"
 
 ENTRYPOINT ["Rscript", "/scraping/main.R"]
