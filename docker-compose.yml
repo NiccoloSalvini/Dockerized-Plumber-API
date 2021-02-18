@@ -30,13 +30,13 @@ services:
     expose: 
       - "5432"
     volumes:
-      - ./shared_data:/var/lib/postgresql/data/
+      - postgres-data:/var/lib/postgresql/data/
     restart: always
     env_file: 
-      - ./postgres/.env # where pwd are
+      - postgres/.env # where pwd are
     
 volumes:
-  shared_data:
+  postgres-data:
   
   # cron-job:
   #   build: 
